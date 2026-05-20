@@ -1,0 +1,106 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("tools");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const dateLabel = entry.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const statusStyles = {
+  active:
+    "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300",
+  beta: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
+  archived:
+    "bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400",
+} as const;
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article>
+    <a
+      href="/"
+      class="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+    >
+      ← All tools
+    </a>
+
+    <header class="mt-4 mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span
+          class={
+            "px-2 py-0.5 text-[10px] uppercase tracking-wider rounded " +
+            statusStyles[entry.data.status]
+          }
+        >
+          {entry.data.status}
+        </span>
+        <time class="text-xs text-neutral-500">{dateLabel}</time>
+      </div>
+      <h1 class="text-3xl font-medium tracking-tight">{entry.data.title}</h1>
+      <p class="mt-3 text-neutral-600 dark:text-neutral-400 text-lg">
+        {entry.data.description}
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-xs">
+        {
+          entry.data.tags.map((tag) => (
+            <span class="text-neutral-500 dark:text-neutral-400">#{tag}</span>
+          ))
+        }
+        {
+          entry.data.githubUrl && (
+            <a
+              href={entry.data.githubUrl}
+              class="ml-auto text-neutral-700 dark:text-neutral-300 underline underline-offset-2 hover:opacity-70"
+              rel="noopener"
+              target="_blank"
+            >
+              GitHub ↗
+            </a>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      entry.data.longDescription && (
+        <p class="mb-8 text-neutral-700 dark:text-neutral-300 leading-relaxed">
+          {entry.data.longDescription}
+        </p>
+      )
+    }
+
+    {
+      entry.data.screenshots.length > 0 && (
+        <div class="mb-10 grid gap-4">
+          {entry.data.screenshots.map((shot) => (
+            <Image
+              src={shot}
+              alt={`${entry.data.title} screenshot`}
+              class="rounded-md border border-neutral-200 dark:border-neutral-800"
+            />
+          ))}
+        </div>
+      )
+    }
+
+    <div
+      class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-pre:bg-neutral-900 prose-pre:text-neutral-100"
+    >
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

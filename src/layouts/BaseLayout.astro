@@ -1,0 +1,32 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const siteTitle = title === "Wheeler Works" ? title : `${title} — Wheeler Works`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{siteTitle}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body class="flex flex-col min-h-dvh">
+    <SiteHeader />
+    <main class="flex-1 mx-auto w-full max-w-3xl px-6 py-12">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

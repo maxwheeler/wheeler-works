@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+
+# Astro
+.astro/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Misc
+.cache/
+.tmp/
+*.tsbuildinfo

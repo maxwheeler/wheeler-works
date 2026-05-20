@@ -1,0 +1,29 @@
+---
+title: Home Media Digitizer
+description: A pipeline for ripping, tagging, and organizing decades of family DVDs, VHS tapes, and cassettes.
+longDescription: >
+  When my parents downsized, I inherited boxes of home video tapes and audio
+  cassettes that nobody could play anymore. This is the toolchain I built to
+  digitize them: capture, denoise, tag, and store everything in a structured
+  archive so it survives the next move.
+tags:
+  - media
+  - archival
+  - ffmpeg
+status: beta
+date: 2026-04-02
+featured: false
+---
+
+## What it does
+
+- Wraps an Elgato capture device and a USB cassette deck behind a single CLI
+- Runs an `ffmpeg` denoise + deinterlace pass with sensible defaults
+- Generates a sidecar `.json` per recording with date, source, and notes
+- Drops everything into a NAS-friendly directory layout
+
+## Roadmap
+
+Currently single-machine and macOS-only. I want to extract the capture step
+into a small daemon so I can leave the rip rig running in the basement and
+drive it from my laptop.

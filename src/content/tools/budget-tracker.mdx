@@ -1,0 +1,34 @@
+---
+title: Budget Tracker
+description: A no-nonsense personal finance tracker that lives in a single SQLite file.
+longDescription: >
+  Most personal finance apps want to be a platform. This one wants to be a
+  spreadsheet you don't have to think about. Categorize transactions, set
+  monthly envelopes, and see where the money actually went — no accounts to
+  link, no ads, no AI insights.
+tags:
+  - finance
+  - cli
+  - sqlite
+status: active
+githubUrl: https://github.com/maxwheeler/budget-tracker
+date: 2026-02-14
+featured: true
+---
+
+## Why I built it
+
+I kept bouncing off the big-name finance apps because they assume you want to
+connect every bank account you've ever had. I wanted something that imports a
+CSV, categorizes it with regex rules, and gets out of my way.
+
+## Stack
+
+- Rust core, with a small Tauri shell for the desktop UI
+- SQLite for storage — the entire database is a single file you can back up
+- A tiny rules DSL for auto-categorization
+
+## Status
+
+Daily-driving it for my own finances. The export format is stable; the rules
+syntax may still change.
