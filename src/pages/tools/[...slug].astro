@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("tools");
@@ -27,6 +27,12 @@ const statusStyles = {
   archived:
     "bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400",
 } as const;
+
+const statusLabels = {
+  active: "Available",
+  beta: "In beta",
+  archived: "Archived",
+} as const;
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
@@ -39,26 +45,60 @@ const statusStyles = {
     </a>
 
     <header class="mt-4 mb-8">
-      <div class="flex items-center gap-2 mb-3">
-        <span
-          class={
-            "px-2 py-0.5 text-[10px] uppercase tracking-wider rounded " +
-            statusStyles[entry.data.status]
-          }
-        >
-          {entry.data.status}
-        </span>
-        <time class="text-xs text-neutral-500">{dateLabel}</time>
-      </div>
-      <h1 class="text-3xl font-medium tracking-tight">{entry.data.title}</h1>
-      <p class="mt-3 text-neutral-600 dark:text-neutral-400 text-lg">
-        {entry.data.description}
-      </p>
-      <div class="mt-4 flex flex-wrap items-center gap-3 text-xs">
+      <div class="flex items-start gap-4">
         {
-          entry.data.tags.map((tag) => (
-            <span class="text-neutral-500 dark:text-neutral-400">#{tag}</span>
+          entry.data.icon ? (
+            <Image
+              src={entry.data.icon}
+              alt=""
+              width={64}
+              height={64}
+              class="w-16 h-16 rounded-lg object-cover shrink-0 border border-neutral-200 dark:border-neutral-800"
+            />
+          ) : (
+            <div
+              role="presentation"
+              class="w-16 h-16 rounded-lg shrink-0 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 font-medium text-2xl select-none"
+            >
+              {entry.data.title.charAt(0).toUpperCase()}
+            </div>
+          )
+        }
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class={
+                "px-2 py-0.5 text-xs rounded-full " +
+                statusStyles[entry.data.status]
+              }
+            >
+              {statusLabels[entry.data.status]}
+            </span>
+            <time class="text-xs text-neutral-500">{dateLabel}</time>
+          </div>
+          <h1 class="text-3xl font-medium tracking-tight">
+            {entry.data.title}
+          </h1>
+          <p class="mt-2 text-neutral-600 dark:text-neutral-400 text-lg">
+            {entry.data.description}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+        {
+          entry.data.platforms.map((p) => (
+            <span class="px-2 py-0.5 rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
+              {p}
+            </span>
           ))
+        }
+        {
+          entry.data.tags.length > 0 && (
+            <span class="text-neutral-500 dark:text-neutral-400">
+              {entry.data.tags.join(" · ")}
+            </span>
+          )
         }
         {
           entry.data.githubUrl && (
@@ -74,28 +114,6 @@ const statusStyles = {
         }
       </div>
     </header>
-
-    {
-      entry.data.longDescription && (
-        <p class="mb-8 text-neutral-700 dark:text-neutral-300 leading-relaxed">
-          {entry.data.longDescription}
-        </p>
-      )
-    }
-
-    {
-      entry.data.screenshots.length > 0 && (
-        <div class="mb-10 grid gap-4">
-          {entry.data.screenshots.map((shot) => (
-            <Image
-              src={shot}
-              alt={`${entry.data.title} screenshot`}
-              class="rounded-md border border-neutral-200 dark:border-neutral-800"
-            />
-          ))}
-        </div>
-      )
-    }
 
     <div
       class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-pre:bg-neutral-900 prose-pre:text-neutral-100"

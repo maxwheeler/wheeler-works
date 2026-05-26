@@ -1,0 +1,27 @@
+---
+title: Feed Me
+description: A simple news reader that pulls from just the sources you care about and ranks articles by your personal interests.
+icon: ./feed-me.png
+tags:
+  - Personal Utility
+platforms:
+  - Web
+  - Mobile
+status: active
+date: 2026-05-23
+---
+
+I like news feeds that include multiple different sources so that I get a diversity of perspectives and information.  Its a bit frustrating to use the Google or Reddit news feeds because many (if not most) of the sources are paid content and I certainly am not plannning to pay for all of them (I do pay for NYT).  News readers such as Feedly let you pick your own sources but if I put in the full list of sites that I like then that can result in 100's of articles a day, making it a challenge to find the ones that are the most interesting for me.  Some apps have AI ranking but they're typically in the paid subscription.  So I decided to build my own reader with a customized feed list and an inexpensive-to-run AI ranker.  Try it out at [feed-me.us](https://feed-me.us).
+
+## How it works 
+
+1. Add RSS feeds — paste a URL or search by site (Feedsearch under the hood)
+2. Describe your interests in plain English; an LLM parses them into positive and
+negative topics
+3. A small embedding model scores every article by similarity to your interests,
+blended with a vote centroid from your recent likes and minus a dislike centroid —
+both decay over 30 days so ranking tracks your *current* preferences
+4. Your feed splits into Relevant (ranked by match) and Unranked (by date); the
+threshold is yours to tune, and every score has a breakdown you can inspect (touch the circle on the bottom right of an article card).  I find the Unranked feed just as interesting as the Relevant one because its always a bit of a surprise.
+5. Tap a source name for per-feed Focus (show only this feed source) or Mute (turn this feed source off for now); share a curated set of feeds with a friend via a one-link import; install to your home screen as a PWA
+  

@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ToolGrid, { type ToolCard } from "../components/ToolGrid";
+import HomeIntro from "../content/home-intro.mdx";
 
 const entries = await getCollection("tools");
 
@@ -10,7 +11,9 @@ const tools: ToolCard[] = entries
     slug: entry.id,
     title: entry.data.title,
     description: entry.data.description,
+    iconSrc: entry.data.icon?.src ?? null,
     tags: entry.data.tags,
+    platforms: entry.data.platforms,
     status: entry.data.status,
     date: entry.data.date.toISOString(),
     featured: entry.data.featured,
@@ -18,21 +21,19 @@ const tools: ToolCard[] = entries
   }))
   .sort((a, b) => b.date.localeCompare(a.date));
 
-const allTags = Array.from(
-  new Set(tools.flatMap((t) => t.tags)),
-).sort((a, b) => a.localeCompare(b));
+const allTags = Array.from(new Set(tools.flatMap((t) => t.tags))).sort((a, b) =>
+  a.localeCompare(b),
+);
 ---
 
 <BaseLayout
   title="Wheeler Works"
   description="A workshop of small tools by Max Wheeler."
 >
-  <section class="mb-12">
-    <h1 class="text-2xl font-medium tracking-tight">Wheeler Works</h1>
-    <p class="mt-2 text-neutral-600 dark:text-neutral-400 max-w-prose">
-      A personal workshop of small tools — things I build to scratch my own
-      itches.
-    </p>
+  <section
+    class="mb-12 prose prose-neutral dark:prose-invert max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-h1:text-2xl prose-h1:mb-2"
+  >
+    <HomeIntro />
   </section>
 
   <ToolGrid client:load tools={tools} allTags={allTags} />

@@ -1,10 +1,14 @@
 import { useMemo, useState } from "react";
 
+export type Platform = "Web" | "Mobile" | "Desktop" | "CLI";
+
 export type ToolCard = {
   slug: string;
   title: string;
   description: string;
+  iconSrc: string | null;
   tags: string[];
+  platforms: Platform[];
   status: "active" | "beta" | "archived";
   date: string;
   featured: boolean;
@@ -24,11 +28,38 @@ const statusStyles: Record<ToolCard["status"], string> = {
     "bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400",
 };
 
+const statusLabels: Record<ToolCard["status"], string> = {
+  active: "Available",
+  beta: "In beta",
+  archived: "Archived",
+};
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
   });
+}
+
+function ToolIcon({ src, title }: { src: string | null; title: string }) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        className="w-12 h-12 rounded-md object-cover shrink-0 border border-neutral-200 dark:border-neutral-800"
+      />
+    );
+  }
+  return (
+    <div
+      role="presentation"
+      className="w-12 h-12 rounded-md shrink-0 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 font-medium text-lg select-none"
+    >
+      {title.charAt(0).toUpperCase()}
+    </div>
+  );
 }
 
 export default function ToolGrid({ tools, allTags }: Props) {
@@ -87,44 +118,52 @@ export default function ToolGrid({ tools, allTags }: Props) {
             <li key={tool.slug}>
               <a
                 href={`/tools/${tool.slug}`}
-                className="block rounded-lg border border-neutral-200 dark:border-neutral-800 p-5 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+                className="flex gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 p-5 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
               >
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 className="text-lg font-medium tracking-tight">
-                    {tool.title}
-                    {tool.featured && (
+                <ToolIcon src={tool.iconSrc} title={tool.title} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h2 className="text-lg font-medium tracking-tight">
+                      {tool.title}
+                      {tool.featured && (
+                        <span
+                          className="ml-2 align-middle text-[10px] uppercase tracking-wider text-neutral-500"
+                          title="Featured"
+                        >
+                          featured
+                        </span>
+                      )}
+                    </h2>
+                    <time className="text-xs text-neutral-500 shrink-0">
+                      {formatDate(tool.date)}
+                    </time>
+                  </div>
+                  <p className="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400">
+                    {tool.description}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span
+                      className={
+                        "px-2 py-0.5 text-xs rounded-full " +
+                        statusStyles[tool.status]
+                      }
+                    >
+                      {statusLabels[tool.status]}
+                    </span>
+                    {tool.platforms.map((p) => (
                       <span
-                        className="ml-2 align-middle text-[10px] uppercase tracking-wider text-neutral-500"
-                        title="Featured"
+                        key={p}
+                        className="px-2 py-0.5 text-xs rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300"
                       >
-                        featured
+                        {p}
+                      </span>
+                    ))}
+                    {tool.tags.length > 0 && (
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                        {tool.tags.join(" · ")}
                       </span>
                     )}
-                  </h2>
-                  <time className="text-xs text-neutral-500 shrink-0">
-                    {formatDate(tool.date)}
-                  </time>
-                </div>
-                <p className="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400">
-                  {tool.description}
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <span
-                    className={
-                      "px-2 py-0.5 text-[10px] uppercase tracking-wider rounded " +
-                      statusStyles[tool.status]
-                    }
-                  >
-                    {tool.status}
-                  </span>
-                  {tool.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs text-neutral-500 dark:text-neutral-400"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
+                  </div>
                 </div>
               </a>
             </li>

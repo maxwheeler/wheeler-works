@@ -1,29 +1,56 @@
 ---
 title: Home Media Digitizer
-description: A pipeline for ripping, tagging, and organizing decades of family DVDs, VHS tapes, and cassettes.
-longDescription: >
-  When my parents downsized, I inherited boxes of home video tapes and audio
-  cassettes that nobody could play anymore. This is the toolchain I built to
-  digitize them: capture, denoise, tag, and store everything in a structured
-  archive so it survives the next move.
+description: A workflow for pulling 20+ years of family video tapes, photo prints, and scattered digital archives into one self-hosted library I actually own.
+icon: ./immich.png
 tags:
-  - media
-  - archival
-  - ffmpeg
-status: beta
+  - Media
+  - Archival
+platforms:
+  - Desktop
+  - Mobile
+status: active
 date: 2026-04-02
 featured: false
 ---
 
+I had two decades of family media trapped in formats one hardware failure
+away from being lost — MiniDV tapes, VHS cassettes, boxes of photo prints,
+and years of digital pictures scattered across iCloud and old hard drives.
+This is the toolchain I built to consolidate it all into a single
+searchable library I control.
+
 ## What it does
 
-- Wraps an Elgato capture device and a USB cassette deck behind a single CLI
-- Runs an `ffmpeg` denoise + deinterlace pass with sensible defaults
-- Generates a sidecar `.json` per recording with date, source, and notes
-- Drops everything into a NAS-friendly directory layout
+- **Captures from the original media.** MiniDV via a chain of FireWire and
+  Thunderbolt adapters, VHS via a ClearClick Video2USB dongle, and prints
+  via a rented Epson FastFoto FF-680W sheet scanner.
+- **Splits tapes into scenes automatically.** A Python script uses
+  PySceneDetect to find hard cuts, pulls a representative frame from each
+  scene, and asks Claude's vision API to generate a description and a
+  sensible filename.
+- **Embeds metadata at ingestion.** Capture dates, scene descriptions, and
+  source info get written into EXIF and XMP fields with `exiftool` so the
+  library can index them later.
+- **Stores everything on a Synology NAS** with Immich pointed at the files
+  as an external library — Immich indexes them in place without copying.
+- **Keeps Apple Photos in sync.** A LaunchAgent rsyncs the Mac's photo
+  library to the NAS hourly over SSH.
+- **Backs up to S3 Glacier Deep Archive** so a disaster-recovery copy lives
+  off-site for pennies a month.
 
-## Roadmap
+## Why I built it
 
-Currently single-machine and macOS-only. I want to extract the capture step
-into a small daemon so I can leave the rip rig running in the basement and
-drive it from my laptop.
+The cloud-photo services were both expensive and a single point of failure.
+I wanted family media that outlives any subscription — searchable,
+browsable, and on storage I control.
+
+## The thing I learned the hard way
+
+Metadata is everything. Spending an extra hour at ingestion to get dates,
+captions, and EXIF/XMP fields right saves days of unsearchable mess later.
+Two specific traps cost me real time: FFmpeg's `-metadata` flag writes to
+the container, which Immich ignores, and edits made through Immich's UI on
+external-library files don't get persisted back to disk. If it isn't in the
+file when you import it, it might as well not exist.
+
+[Full write-up on dev.to →](https://dev.to/max_wheeler_136997c4effbd/how-i-digitized-years-of-home-videos-and-photos-with-immich-2035)
