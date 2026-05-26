@@ -33,3 +33,8 @@ pnpm-debug.log*
 .cache/
 .tmp/
 *.tsbuildinfo
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
