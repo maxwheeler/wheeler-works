@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Badge, Button } from "@wheeler-works/ui-react";
 
 export type Platform = "Web" | "Mobile" | "Desktop" | "CLI";
 
@@ -20,12 +21,13 @@ type Props = {
   allTags: string[];
 };
 
-const statusStyles: Record<ToolCard["status"], string> = {
-  active:
-    "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300",
-  beta: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
-  archived:
-    "bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400",
+const statusVariant: Record<
+  ToolCard["status"],
+  "success" | "warning" | "outline"
+> = {
+  active: "success",
+  beta: "warning",
+  archived: "outline",
 };
 
 const statusLabels: Record<ToolCard["status"], string> = {
@@ -48,14 +50,14 @@ function ToolIcon({ src, title }: { src: string | null; title: string }) {
         src={src}
         alt=""
         aria-hidden="true"
-        className="w-12 h-12 rounded-md object-cover shrink-0 border border-neutral-200 dark:border-neutral-800"
+        className="w-12 h-12 rounded-md object-cover shrink-0 border border-border"
       />
     );
   }
   return (
     <div
       role="presentation"
-      className="w-12 h-12 rounded-md shrink-0 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 font-medium text-lg select-none"
+      className="w-12 h-12 rounded-md shrink-0 bg-muted text-muted-foreground border border-border flex items-center justify-center font-medium text-lg select-none"
     >
       {title.charAt(0).toUpperCase()}
     </div>
@@ -78,38 +80,37 @@ export default function ToolGrid({ tools, allTags }: Props) {
   return (
     <div>
       <div className="mb-8 flex flex-wrap items-center gap-2">
-        <span className="text-xs uppercase tracking-wider text-neutral-500 mr-2">
+        <span className="text-xs uppercase tracking-wider text-muted-foreground mr-2">
           Filter
         </span>
         {allTags.map((tag) => {
           const active = selected.includes(tag);
           return (
-            <button
+            <Button
               key={tag}
+              variant={active ? "default" : "outline"}
+              size="sm"
+              className="rounded-full"
               onClick={() => toggle(tag)}
-              className={
-                "px-2.5 py-1 text-xs rounded-full border transition-colors " +
-                (active
-                  ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100"
-                  : "border-neutral-300 text-neutral-700 hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-500")
-              }
             >
               {tag}
-            </button>
+            </Button>
           );
         })}
         {selected.length > 0 && (
-          <button
+          <Button
+            variant="link"
+            size="sm"
+            className="text-muted-foreground px-1"
             onClick={() => setSelected([])}
-            className="ml-1 text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
             clear
-          </button>
+          </Button>
         )}
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted-foreground">
           No tools match the selected tags.
         </p>
       ) : (
@@ -118,48 +119,40 @@ export default function ToolGrid({ tools, allTags }: Props) {
             <li key={tool.slug}>
               <a
                 href={`/tools/${tool.slug}`}
-                className="flex gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 p-5 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+                className="flex gap-4 rounded-lg border border-border bg-surface p-5 hover:border-foreground/40 transition-colors"
               >
                 <ToolIcon src={tool.iconSrc} title={tool.title} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="text-lg font-medium tracking-tight">
+                    <h2 className="text-lg font-medium tracking-tight text-foreground">
                       {tool.title}
                       {tool.featured && (
                         <span
-                          className="ml-2 align-middle text-[10px] uppercase tracking-wider text-neutral-500"
+                          className="ml-2 align-middle text-[10px] uppercase tracking-wider text-muted-foreground"
                           title="Featured"
                         >
                           featured
                         </span>
                       )}
                     </h2>
-                    <time className="text-xs text-neutral-500 shrink-0">
+                    <time className="text-xs text-muted-foreground shrink-0">
                       {formatDate(tool.date)}
                     </time>
                   </div>
-                  <p className="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400">
+                  <p className="mt-1.5 text-sm text-muted-foreground">
                     {tool.description}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span
-                      className={
-                        "px-2 py-0.5 text-xs rounded-full " +
-                        statusStyles[tool.status]
-                      }
-                    >
+                    <Badge variant={statusVariant[tool.status]}>
                       {statusLabels[tool.status]}
-                    </span>
+                    </Badge>
                     {tool.platforms.map((p) => (
-                      <span
-                        key={p}
-                        className="px-2 py-0.5 text-xs rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300"
-                      >
+                      <Badge key={p} variant="outline">
                         {p}
-                      </span>
+                      </Badge>
                     ))}
                     {tool.tags.length > 0 && (
-                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                      <span className="text-xs text-muted-foreground">
                         {tool.tags.join(" · ")}
                       </span>
                     )}

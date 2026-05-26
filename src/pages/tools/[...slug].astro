@@ -2,6 +2,8 @@
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Badge from "@wheeler-works/ui-astro/Badge.astro";
+import Prose from "@wheeler-works/ui-astro/Prose.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("tools");
@@ -20,12 +22,10 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
   day: "numeric",
 });
 
-const statusStyles = {
-  active:
-    "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300",
-  beta: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
-  archived:
-    "bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400",
+const statusVariant = {
+  active: "success",
+  beta: "warning",
+  archived: "outline",
 } as const;
 
 const statusLabels = {
@@ -39,7 +39,7 @@ const statusLabels = {
   <article>
     <a
       href="/"
-      class="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+      class="text-xs text-muted-foreground hover:text-foreground"
     >
       ← All tools
     </a>
@@ -53,12 +53,12 @@ const statusLabels = {
               alt=""
               width={64}
               height={64}
-              class="w-16 h-16 rounded-lg object-cover shrink-0 border border-neutral-200 dark:border-neutral-800"
+              class="w-16 h-16 rounded-lg object-cover shrink-0 border border-border"
             />
           ) : (
             <div
               role="presentation"
-              class="w-16 h-16 rounded-lg shrink-0 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 font-medium text-2xl select-none"
+              class="w-16 h-16 rounded-lg shrink-0 bg-muted text-muted-foreground border border-border flex items-center justify-center font-medium text-2xl select-none"
             >
               {entry.data.title.charAt(0).toUpperCase()}
             </div>
@@ -66,20 +66,15 @@ const statusLabels = {
         }
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-2">
-            <span
-              class={
-                "px-2 py-0.5 text-xs rounded-full " +
-                statusStyles[entry.data.status]
-              }
-            >
+            <Badge variant={statusVariant[entry.data.status]}>
               {statusLabels[entry.data.status]}
-            </span>
-            <time class="text-xs text-neutral-500">{dateLabel}</time>
+            </Badge>
+            <time class="text-xs text-muted-foreground">{dateLabel}</time>
           </div>
-          <h1 class="text-3xl font-medium tracking-tight">
+          <h1 class="text-3xl font-medium tracking-tight text-foreground">
             {entry.data.title}
           </h1>
-          <p class="mt-2 text-neutral-600 dark:text-neutral-400 text-lg">
+          <p class="mt-2 text-muted-foreground text-lg">
             {entry.data.description}
           </p>
         </div>
@@ -88,14 +83,12 @@ const statusLabels = {
       <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
         {
           entry.data.platforms.map((p) => (
-            <span class="px-2 py-0.5 rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
-              {p}
-            </span>
+            <Badge variant="outline">{p}</Badge>
           ))
         }
         {
           entry.data.tags.length > 0 && (
-            <span class="text-neutral-500 dark:text-neutral-400">
+            <span class="text-muted-foreground">
               {entry.data.tags.join(" · ")}
             </span>
           )
@@ -104,7 +97,7 @@ const statusLabels = {
           entry.data.githubUrl && (
             <a
               href={entry.data.githubUrl}
-              class="ml-auto text-neutral-700 dark:text-neutral-300 underline underline-offset-2 hover:opacity-70"
+              class="ml-auto text-foreground underline underline-offset-2 hover:opacity-70"
               rel="noopener"
               target="_blank"
             >
@@ -115,10 +108,8 @@ const statusLabels = {
       </div>
     </header>
 
-    <div
-      class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-pre:bg-neutral-900 prose-pre:text-neutral-100"
-    >
+    <Prose>
       <Content />
-    </div>
+    </Prose>
   </article>
 </BaseLayout>

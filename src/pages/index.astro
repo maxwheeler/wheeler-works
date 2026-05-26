@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Prose from "@wheeler-works/ui-astro/Prose.astro";
 import ToolGrid, { type ToolCard } from "../components/ToolGrid";
 import HomeIntro from "../content/home-intro.mdx";
 
@@ -30,11 +31,11 @@ const allTags = Array.from(new Set(tools.flatMap((t) => t.tags))).sort((a, b) =>
   title="Wheeler Works"
   description="A workshop of small tools by Max Wheeler."
 >
-  <section
-    class="mb-12 prose prose-neutral dark:prose-invert max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-h1:text-2xl prose-h1:mb-2"
+  <Prose
+    class="mb-12 prose-headings:font-medium prose-headings:tracking-tight prose-h1:text-2xl prose-h1:mb-2"
   >
     <HomeIntro />
-  </section>
+  </Prose>
 
   <ToolGrid client:load tools={tools} allTags={allTags} />
 </BaseLayout>
