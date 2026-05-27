@@ -1,13 +1,5 @@
 {
   "projects": {
     "default": "wheeler-works"
-  },
-  "targets": {
-    "wheeler-works": {
-      "hosting": {
-        "main": ["wheeler-works"],
-        "www": ["wheeler-works-redirect"]
-      }
-    }
   }
 }
