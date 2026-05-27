@@ -6,35 +6,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This app is a **pnpm workspace member** rooted in a separate repo. The
 workspace lives at `/Users/maxwheeler/source/wheeler-works-ui-lib` and that
-repo's `pnpm-workspace.yaml` lists `../wheeler-works` as a member. pnpm walks
-upward to find the workspace file, so all pnpm commands run from the ui-lib
-root with `--filter wheeler-works`:
+repo's `pnpm-workspace.yaml` lists `../wheeler-works` as a member. There is
+no `package-lock.json` or local lockfile in this repo — the lockfile lives
+in the ui-lib root, and `node_modules/@wheeler-works/*` are symlinks
+maintained by `pnpm install` run from over there.
 
-```sh
-cd /Users/maxwheeler/source/wheeler-works-ui-lib
-pnpm install                          # touches every workspace member
-pnpm --filter wheeler-works dev
-pnpm --filter wheeler-works build
-pnpm --filter wheeler-works check
-```
+**Day-to-day work happens from inside this repo with `npm run <script>`.**
+Trips to the ui-lib root are only needed for two things:
 
-Do **not** run `pnpm install` from inside this repo. pnpm won't find the
-workspace and will fail to resolve the `workspace:*` deps. There is no
-package-lock.json; the lockfile lives in the ui-lib root.
+1. **Dep changes** — adding or upgrading any package, including
+   `@wheeler-works/*` whose `workspace:*` version pin is satisfied by the
+   symlink. Run `pnpm install` (or `pnpm add <pkg> --filter wheeler-works`)
+   from the ui-lib root, then come back here.
+2. **Cross-cutting UI changes** — when something needs to land in the ui-lib
+   itself (a new component, a token tweak), edit there. The symlinks pick
+   the change up live.
 
-If you only need to drive a script from within this repo, the npm-style
-fallback `npx astro dev` works because the symlinked `node_modules` is real.
-But anything that resolves the workspace (install, add, deploy) must run from
-the ui-lib root.
+Don't run `pnpm <script>` from inside this repo. pnpm 11's
+`verify-deps-before-run` precheck calls `pnpm install`, which fails because
+pnpm walks upward looking for `pnpm-workspace.yaml` and doesn't find one.
+`npm run <script>` and direct binary invocations like
+`./node_modules/.bin/astro dev` skip that precheck and just work — they only
+need the symlinks, which are already in place.
 
 ## Commands
 
-All run from the ui-lib root:
+All run from this repo's root:
 
-- Dev server: `pnpm --filter wheeler-works dev`
-- Build: `pnpm --filter wheeler-works build`
-- Preview: `pnpm --filter wheeler-works preview`
-- Type/diagnostics check: `pnpm --filter wheeler-works check`
+- Dev server: `npm run dev`
+- Build: `npm run build`
+- Preview: `npm run preview`
+- Type/diagnostics check: `npm run check`
+- Deploy to Firebase: `firebase deploy --only hosting` (after a build)
 
 No test runner is configured.
 
@@ -95,10 +98,31 @@ Astro 6 static site, React + MDX islands, Tailwind v4 via the shared
   something a library component doesn't expose, raise the gap with the
   ui-lib rather than working around it locally.
 
+## Dev server gotchas
+
+- **Content-sync wedges on validation errors.** If an MDX edit doesn't
+  appear in the browser, the terminal output is the source of truth — look
+  there first. A failed schema validation (e.g. a `platforms` value not in
+  the enum) leaves the dev server serving the last *successful* state and
+  silently dropping subsequent edits. Recovery: Ctrl+C, restart. If that
+  doesn't clear it, `rm -rf .astro` and restart.
+- **Schema changes need a dev server restart.** Editing
+  `src/content.config.ts` itself (adding fields, changing enums) won't HMR
+  reliably. Restart the dev server.
+
 ## Deploy
 
-Static Astro site → Flavor 2 of `DEPLOYING.md` in the ui-lib repo: build the
-deploy snapshot with `pnpm deploy --legacy`, then `./node_modules/.bin/astro
-build` inside the snapshot, then ship the `dist/` directory through nginx.
-**Deploy target is not yet wired up** — ask Max where this site should live
-the first time you deploy it.
+Site is live at https://wheelerworks.us via Firebase Hosting (project
+`wheeler-works`). `www.wheelerworks.us` 301-redirects to the apex,
+configured at the domain level in the Firebase console (no second hosting
+site needed). Caching: `_astro/**` hashed assets get 1y immutable; HTML
+gets 5min must-revalidate.
+
+Going-forward deploy is two commands:
+
+```sh
+npm run build
+firebase deploy --only hosting
+```
+
+GitHub remote: https://github.com/maxwheeler/wheeler-works (public).
