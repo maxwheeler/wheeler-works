@@ -1,26 +1,41 @@
 {
-  "hosting": {
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "headers": [
-      {
-        "source": "/_astro/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
-        ]
-      },
-      {
-        "source": "**/*.@(html)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=300, must-revalidate"
-          }
-        ]
-      }
-    ]
-  }
+  "hosting": [
+    {
+      "target": "main",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "/_astro/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=31536000, immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.@(html)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public, max-age=300, must-revalidate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "www",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "redirects": [
+        {
+          "regex": "/(?P<path>.*)",
+          "destination": "https://wheelerworks.us/:path",
+          "type": 301
+        }
+      ]
+    }
+  ]
 }
