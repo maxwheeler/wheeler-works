@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="referrer" content="no-referrer">
+<title>Trump's Claims About Biden's Term — A Follow-Through Tracker</title>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --panel: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #5a5a5a;
+    --line: #e3e0d8;
+    --accent: #b3261e;
+    --accent-2: #1f4e79;
+    --warn: #b8860b;
+    --good: #2e7d32;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.55;
+  }
+  header {
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 small {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: normal;
+    margin-top: 4px;
+  }
+  nav.crumbs {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  nav.crumbs a {
+    color: var(--accent-2);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  nav.crumbs a:hover { text-decoration: underline; }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+  .page-title {
+    font-size: 28px;
+    margin: 8px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .page-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  /* Categories grid */
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .cat-btn {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    padding: 18px 18px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: transform 0.05s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .cat-btn:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    border-left-color: var(--accent-2);
+  }
+  .cat-btn .count {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: normal;
+    margin-top: 4px;
+  }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 24px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card .subcat {
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .claim {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    line-height: 1.35;
+  }
+  .reason {
+    font-size: 15px;
+    color: var(--ink);
+    background: #faf7ee;
+    border-left: 3px solid var(--warn);
+    padding: 10px 14px;
+    margin: 0 0 14px;
+  }
+  .reason .label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  @media (min-width: 720px) {
+    .meta-row.two { grid-template-columns: 1fr 1fr; }
+  }
+  .meta {
+    font-size: 14px;
+    padding: 10px 12px;
+    background: #fafafa;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .meta .label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .meta.fact-check { background: #fff8e1; border-color: #f0d27e; }
+  .meta.fact-check.fc-true { background: #e8f5e9; border-color: #a5d6a7; border-left: 4px solid #2e7d32; }
+  .meta.fact-check.fc-true .label { color: #1b5e20; }
+  .meta.fact-check.fc-mixed { background: #fff8e1; border-color: #f0d27e; border-left: 4px solid #b8860b; }
+  .meta.fact-check.fc-mixed .label { color: #8a6500; }
+  .meta.fact-check.fc-false { background: #fdecea; border-color: #f3b3ad; border-left: 4px solid #b3261e; }
+  .meta.fact-check.fc-false .label { color: #8a1c16; }
+  .meta.fact-check .rating-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .meta.fact-check.fc-true .rating-pill { background: #2e7d32; color: white; }
+  .meta.fact-check.fc-mixed .rating-pill { background: #b8860b; color: white; }
+  .meta.fact-check.fc-false .rating-pill { background: #b3261e; color: white; }
+  .meta.record { background: #eef4fa; border-color: #c8d8e8; }
+  .meta.record.rec-green { background: #e8f5e9; border-color: #a5d6a7; border-left: 4px solid #2e7d32; }
+  .meta.record.rec-green .label { color: #1b5e20; }
+  .meta.record.rec-yellow { background: #fff8e1; border-color: #f0d27e; border-left: 4px solid #b8860b; }
+  .meta.record.rec-yellow .label { color: #8a6500; }
+  .meta.record.rec-red { background: #fdecea; border-color: #f3b3ad; border-left: 4px solid #b3261e; }
+  .meta.record.rec-red .label { color: #8a1c16; }
+  .meta.record.rec-na { background: #f4f4f4; border-color: #d8d8d8; border-left: 4px solid #888; }
+  .meta.record.rec-na .label { color: #555; }
+  .meta.record .rating-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .meta.record.rec-green .rating-pill { background: #2e7d32; color: white; }
+  .meta.record.rec-yellow .rating-pill { background: #b8860b; color: white; }
+  .meta.record.rec-red .rating-pill { background: #b3261e; color: white; }
+  .meta.record.rec-na .rating-pill { background: #888; color: white; }
+  .meta.biden { background: #f1f5fb; border-color: #c8d6e6; }
+  .meta.trump { background: #fbeeee; border-color: #e8c8c8; }
+  .meta.approval { background: #eef7ee; border-color: #c8e0c8; }
+  .meta.approval.app-green { background: #e8f5e9; border-color: #a5d6a7; border-left: 4px solid #2e7d32; }
+  .meta.approval.app-green .label { color: #1b5e20; }
+  .meta.approval.app-yellow { background: #fff8e1; border-color: #f0d27e; border-left: 4px solid #b8860b; }
+  .meta.approval.app-yellow .label { color: #8a6500; }
+  .meta.approval.app-red { background: #fdecea; border-color: #f3b3ad; border-left: 4px solid #b3261e; }
+  .meta.approval.app-red .label { color: #8a1c16; }
+  .meta.approval.app-na { background: #f4f4f4; border-color: #d8d8d8; border-left: 4px solid #888; }
+  .meta.approval.app-na .label { color: #555; }
+  .meta.approval .rating-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .meta.approval.app-green .rating-pill { background: #2e7d32; color: white; }
+  .meta.approval.app-yellow .rating-pill { background: #b8860b; color: white; }
+  .meta.approval.app-red .rating-pill { background: #b3261e; color: white; }
+  .meta.approval.app-na .rating-pill { background: #888; color: white; }
+
+  /* Footer button row */
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    background: var(--accent-2);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: #163a5e; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--accent-2);
+    border: 1px solid var(--accent-2);
+  }
+  .btn.secondary:hover { background: #eef4fa; }
+  .btn.ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .btn.ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .progress .step {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+  }
+  .progress .step.active { background: var(--accent); }
+  .progress .step.done { background: var(--accent-2); }
+
+  /* Summary screen */
+  .summary-intro {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+  .summary-section {
+    margin-bottom: 28px;
+  }
+  .summary-section-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .summary-head, .summary-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px 150px 150px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+  }
+  .summary-head {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line);
+  }
+  .summary-row {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid #888;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    color: var(--ink);
+    width: 100%;
+  }
+  .summary-row.row-red { border-left-color: #b3261e; background: #fdf3f2; }
+  .summary-row.row-yellow { border-left-color: #b8860b; background: #fdf8e7; }
+  .summary-row.row-green { border-left-color: #2e7d32; background: #eef6ef; }
+  .summary-row.row-gray { border-left-color: #888; background: var(--panel); }
+  .summary-row:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+  .summary-claim {
+    min-width: 0;
+  }
+  .summary-claim .sub {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .summary-claim .text {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+  .tl-cell {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .tl-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .tl-green { background: #2e7d32; }
+  .tl-yellow { background: #b8860b; }
+  .tl-red { background: #b3261e; }
+  .tl-gray { background: #888; }
+  @media (max-width: 720px) {
+    .summary-head, .summary-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .summary-head { display: none; }
+    .tl-cell::before {
+      content: attr(data-label);
+      display: inline-block;
+      width: 90px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>
+      Trump's Claims About Biden's Term
+      <small>What he said, what he's done, and what Americans think — as of May 2026</small>
+    </h1>
+    <nav class="crumbs" id="crumbs"></nav>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* -----------------------------
+   CSV DATA — embedded inline so this file works offline
+------------------------------ */
+const CSV_TEXT = `"Category","Trump's Claim About Biden's Term","Trump's Implied/Stated Reason to Elect Him Instead","Notable Context/Venue","Fact-Check Status of Original Claim","Trump's Second-Term Record on This Issue (as of May 2026)","Biden Responsibility (if claim was at least partially true)","Trump Responsibility (if claim was at least partially true)","Public Approval of Trump's Follow-Through (all polling with dates)"
+"Economy - Inflation","Biden caused the worst inflation in generations; groceries gas and rent skyrocketed","Trump would restore low prices and the strong pre-Biden economy","2024 RNC speech; rally trail; debates","Mostly true on direction (CPI peaked ~9% in 2022 under Biden) but exaggerated as 'worst in history' - 1970s-80s inflation was worse","Not Fulfilled: CPI dropped from 3.0% (Jan 2025) to 2.7% (Dec 2025) but then rose to 3.8% by April 2026 - higher than when he took office and higher than Biden's last 20 months. The brief dip fully reversed. PolitiFact rates the 'lower prices' pledge as Stalled.","Mixed - inherited post-COVID supply chain crisis but ARP ($1.9T) added demand-side pressure","Responsible - inherited a 3.0% rate that has risen to 3.8% under his tariffs and Iran war spike","Inflation handling consistently underwater and worsening: 65% disapprove (Fox Jan 2026); 72% disapprove - up from 65% in Feb (WaPo/ABC/Ipsos May 2026); 27% approve (AP-NORC May 2026); inflation/cost of living 61% disapprove (NBC June 2025). PolitiFact rates 'lower prices' promise Stalled (Jan 2026)."
+"Economy - Cost of Living","Bacon eggs bread and basic groceries became unaffordable for working families under Biden","Trump would bring prices down on Day One","Campaign rallies (frequent prop displays of grocery items)","True that grocery prices rose 21.5% under Biden","Not Fulfilled: A few items fell (eggs down ~45%, largely bird-flu recovery rather than policy; bacon and bread down slightly) but beef is up 21%, coffee up ~35%, and overall groceries kept rising 2-3% annually. Net direction is up, not down - the 'prices down on Day One' promise was not met.","Mixed - global food inflation hit all countries post-pandemic but US fiscal policy amplified it","Responsible - tariffs on food imports and ag inputs raised costs; egg drop largely bird flu recovery","Cost-of-living handling deeply and consistently underwater: 31% approve / 54% disapprove (Reuters/Ipsos March 2026); 23% approve / 76% disapprove incl 47% of Republicans disapproving (AP-NORC April 2026); 23% approve (Reuters/Ipsos late April 2026); 22% approve - record low (Reuters/Ipsos early May 2026); 76% disapprove (WaPo/ABC/Ipsos May 2026); 25% approve / 72% disapprove with 57% STRONGLY disapprove (Verasight May 18-19 2026). Worst-rated issue in nearly every poll."
+"Economy - Gas Prices","Gasoline prices doubled or more under Biden","Trump would slash gas prices by drilling and energy independence","Rallies and debates","Misleading - prices rose ~55% under Biden but did not double; partly post-COVID recovery","Partially fulfilled then reversed: Gas fell below $2.80 by late 2025 but spiked after Feb/June Iran strikes; Energy Sec Wright admitted prices may stay above $3 until 2027.","Inherited - COVID-era price collapse made any recovery look dramatic; Russia invasion of Ukraine drove 2022 spike","Responsible - Iran military action directly caused 2026 price spike; tariffs raised drilling input costs","Charged to Trump's ledger as ~25% approve / 75% disapprove on gas prices,  inverting Reuters/Ipsos (May 8-11 2026): 75% blaming the Trump administration for gas-price increases. No single 'Trump gas-price handling' approval poll exists,  but extensive US public polling shows broad strain and blame directed at Trump. NPR/PBS/Marist (fielded April 27-30 2026): ~81% say current gas prices strain their household budget and 63% blame Trump for the rise given the Iran war,  including about a third of Republicans. National average hit $4.48/gal (AAA May 5 2026) and $4.56 by mid-May,  up from below $3 before the war. Reuters/Ipsos: 55% said gas increases hurt their finances (March 2026),  rising to 64% by May 8-11 2026,  with 83-87% expecting further increases. 96% of car owners call gas prices a financial burden and 69% have cut back driving (American Muscle 2026)."
+"Economy - Mortgage/Housing","Mortgage rates and home prices became unaffordable; the American Dream is dead under Biden","Trump would restore affordable housing through lower rates and growth","2024 RNC speech and rallies","True that 30-yr rates rose from 2.73% to 6.89%; Trump's quadrupling claim was false","Largely unchanged: Housing inflation still ~3% year-over-year; mortgage rates remain elevated.","Mixed - Fed rate hikes (independent of Biden) drove mortgage rates; fiscal stimulus contributed to underlying inflation","Responsible for inaction - rates remain elevated; tariffs and immigration policy raised construction costs","Charged to Trump's ledger as ~7% approve / 74% disapprove on housing (inverting UF/YouGov Oct 2025's 71-74% saying affordability has WORSENED in their community vs only 7% IMPROVED). No direct Trump-housing-handling poll exists; on this site we score the sentiment as a Trump approval signal anyway. Corroborating reads: 74% of young Americans incl 70% of young conservatives call housing costs a 'crisis' (Heartland/Rasmussen May 2026); 70% say local cost of living is not affordable for an average family (Marist Dec 2025); ~47% personally moderately/extremely concerned about affording their own housing (UF/YouGov Oct 2025)."
+"Economy - Wages","Real wages fell under Biden because inflation outpaced raises","Trump would deliver real wage growth as he claims to have done in first term","Campaign trail","Partly true early in Biden term; real wages recovered by 2023-24","Genuinely Mixed/unclear: real wages were roughly flat then slipped negative again after ~April 2026 when inflation re-outpaced wage growth (USAFacts, Statista). Whether wages 'keep up' depends on the measure used (Pew: 'it depends'), so this is real analytical ambiguity rather than a clear pass or fail.","Mixed - inflation eroded wages 2021-22; tight labor market helped wages recover by 2023-24","Responsible - renewed inflation under tariffs again eroding real wage gains","Charged to Trump's ledger as ~23% approve / 77% disapprove on wages (inverting CBS News May 2026's 77% say income isn't keeping up with inflation). The polls don't ask about him by name, but on this site we score consumer sentiment as a Trump approval signal regardless. Corroborating reads: 62% of employed Americans say income hasn't kept pace with expenses - highest in 4 years of polling (Bankrate Oct/Dec 2025); 66% of workers say wages aren't keeping up with prices,  incl 57% of those earning $150k+ (CNN/SSRS May 2026). Matches the underlying data: real wages fell behind inflation again from ~April 2026 after the Iran gas spike (USAFacts,  Pew,  Statista May 2026)."
+"Economy - Best Economy Ever","Biden ruined what Trump described as the greatest economy in U.S. history","A second Trump term would recreate the pre-pandemic Trump economy","2024 RNC speech","False - Trump-era GDP growth was below several predecessors; unemployment lows were matched/exceeded by Biden","Not Fulfilled: GDP growth has slowed in 2025-26; consumer sentiment near all-time lows.","N/A","N/A","N/A original claim false. Economy handling steadily declined: 55% disapprove (NPR/PBS/Marist April 2025); 59% disapprove (Fox Jan 2026); 38% approve (AP-NORC March 2026) falling to 30% approve (AP-NORC April 2026); 29% approve (Reuters/Ipsos March 2026); 34% approve (Reuters/Ipsos May 2026) - among lowest of either term despite record stock-market highs."
+"Immigration - Border Crossings","Biden opened the border and allowed millions of illegal crossings; the worst invasion in history","Trump would seal the border and finish the wall","RNC speech; rallies; debates","True on volume (FY2023-24 had record encounters >2 million) though 'worst in history' framing debatable","Largely fulfilled: ~238,000 apprehensions in FY2025 vs 1.5M in FY2024; lowest in 55+ years.","Responsible - rescinded Remain in Mexico and Title 42 early on; CBP One app; humanitarian parole expansions all increased flows","Responsible - Day-1 executive orders ended CBP One asylum and parole; deployed military; deterrence took effect immediately","Trump's strongest issue but eroding: 51% approve (NBC June 2025); 50% approve / 46% disapprove (Verasight Jan 2026); 50-50 split (UMass April 2026). Republicans 93% approve."
+"Immigration - Migrant Crime","Biden released criminals from prisons jails and mental institutions of other countries into the U.S.","Trump would conduct the largest deportation operation in history","Rallies; RNC speech","Largely false - no evidence other countries systematically emptied prisons; studies show migrants have lower crime rates than native-born","Partially fulfilled: ~622,000 deportations plus ~1.9M self-deportations claimed by DHS.","N/A","N/A","N/A claim largely false. Deportations: 42% approve / 54% disapprove (Verasight Jan 2026); immigration handling flipped 51-44 approve (March 2025) to 43-52 disapprove (March 2026) (Economist/YouGov); support for mass deportation fell 47%→38% (Gallup 2024-2025)."
+"Immigration - Fentanyl","Biden's open border allowed fentanyl to flood in killing hundreds of thousands of Americans","Trump would shut down cartels and stop the drug flow","Rallies and debates","Misleading - most fentanyl seized at legal ports of entry carried by U.S. citizens not migrants","DHS reports fentanyl trafficking at southern border cut roughly in half compared to 2024; overdose deaths declining nationally (trend began under Biden).","Partial - overdose deaths peaked under Biden but began declining in 2023 due in part to his narcan access and treatment expansion","Mixed - tariff pressure cited as factor; overdose decline trend was already underway","No specific fentanyl-handling poll found at any date. Bundled with border (50% approve) and immigration (44% approve)."
+"Immigration - Sanctuary Cities","Biden coddled sanctuary cities that protect illegal immigrant criminals","Trump would defund sanctuary cities and deport criminal aliens","Campaign trail","Mixed - Biden did not 'coddle' but did not aggressively enforce against sanctuary jurisdictions","Fulfilled: aggressive enforcement - ICE raids in Chicago LA NYC; DOJ lawsuits; funding threats.","Inherited - sanctuary policies are local; Biden did not crack down but also did not create them","Responsible - chose aggressive federal action against sanctuary jurisdictions","ICE approval just 33% (UMass April 2026), down sharply since July 2025; support for ICE physical force/military-grade weapons fell after Minneapolis killings of US citizens Renée Good and Alex Pretti by ICE/Border Patrol."
+"Immigration - Asylum","Biden abused the asylum system and let migrants stay indefinitely","Trump would reinstate Remain in Mexico and end catch-and-release","Campaign and debates","Mixed - Biden initially expanded asylum access then tightened in 2024","Fulfilled: CBP One app shut down Day 1; asylum largely suspended at border; Remain in Mexico reinstated.","Responsible - actively expanded asylum access through CBP One and parole programs in 2021-23","Responsible - chose to shut these programs down on Day 1","58% supported 'dramatically reducing' asylum at inauguration (Reuters/Ipsos Jan 2025); by April 2026 majority of swing voters want 'both/and' approach with expanded legal pathways (CAP/Blue Rose, 12,100 voters) - enforcement-only approach now unpopular."
+"Crime - Violent Crime","Biden presided over a crime wave in U.S. cities","Trump would back the police and restore law and order","Rallies and RNC speech","Largely false - FBI data showed violent crime declining under Biden (down 6% Q4 2023 year-over-year)","Crime continued declining into 2025 (trend predates Trump).","N/A","N/A","N/A claim largely false. Crime/public safety handling net -9 (Verasight Jan 2026)."
+"Crime - Prosecutors","Biden's Democratic-aligned soft-on-crime DAs turned cities into crime zones","Trump would empower federal law enforcement to clean up cities","Campaign trail","Misleading - DAs are local not federal; data didn't support 'crime zones' claim","Federalized DC police temporarily; deployed National Guard to DC.","N/A","N/A","N/A claim largely false. National Guard urban deployments polled with majority opposition (mid-2025)."
+"Foreign Policy - Afghanistan","Biden's botched Afghanistan withdrawal was the most embarrassing moment in U.S. history; 13 service members killed","Trump would restore American strength and credibility abroad","Arlington appearance Aug 2024; rallies; RNC","Misleading - the withdrawal deal was negotiated by Trump's own administration; 2023 State Dept review faulted both administrations","N/A - cannot undo past event.","Mixed - executed the withdrawal and made tactical decisions faulted by State Dept review","Mixed - originally negotiated the Doha withdrawal deal and May 2021 deadline","N/A - no current action to evaluate."
+"Foreign Policy - Equipment Left Behind","Biden left $85 billion in military equipment to the Taliban","Trump would never leave equipment to enemies and would project strength","Rallies","Misleading - the $85B figure includes total Afghanistan war funding over 20 years, not equipment value (~$7B actually left)","N/A - retrospective claim.","Mixed - actual ~$7B left was a real outcome of withdrawal execution decisions","Mixed - much of the equipment was provided to Afghan forces over 20 years including under Trump's term","N/A - no current action to evaluate."
+"Foreign Policy - Ukraine War","Biden's weakness emboldened Putin to invade Ukraine; the war would never have happened under Trump","Trump would end the Ukraine war quickly through strength (often 'in 24 hours')","Debates and rallies","Unfalsifiable counterfactual; experts disagree on what would have deterred Putin","Not fulfilled: War still ongoing into 2026; only 3-day ceasefire in May 2026.","N/A","N/A","Did not follow through on the '24-hour' pledge; war still ongoing in 2026. On handling of the Ukraine war,  a YouGov/Economist poll (June 2025) found about 30% approved and about 44% disapproved - a 'net approval' of roughly -14 (the approve percentage minus the disapprove percentage; negative means more people disapprove than approve). Foreign-policy handling overall stayed net-negative into 2026 (e.g. -23 on foreign policy,  Verasight May 2026)."
+"Foreign Policy - Israel/Oct 7","Biden's weakness led to Hamas's October 7 attack on Israel","Trump's deterrence would have prevented the attack and he would back Israel fully","Rallies and RNC","Unfalsifiable counterfactual; Oct 7 planning predates Biden's foreign policy decisions","Fulfilled: strong U.S. backing of Israel continued.","N/A","N/A","N/A - claim was largely unfalsifiable counterfactual."
+"Foreign Policy - Iran","Biden funded Iran by lifting sanctions and unfreezing assets enabling its proxies","Trump would restore maximum pressure on Iran","Rallies","Misleading - $6B was Iranian funds for humanitarian use; broader sanctions remained","Fulfilled (went beyond the 'maximum pressure' promise): 'Operation Epic Fury' Feb 28 2026 strikes killed Iran's supreme leader; gas prices spiked; SPR drawn down 172M barrels.","Partial - unfroze $6B (humanitarian use) and was less aggressive on sanctions enforcement than Trump's first term","Responsible - chose direct military action that escalated rather than deescalated","Unpopular at both strike episodes: June 2025 strikes ~36-44% approve; Feb 2026 Operation Epic Fury: 27% approve / 43% disapprove (Reuters/Ipsos Feb 28-Mar 1 2026); 41% approve / 59% disapprove (CNN March 2026); 40% approve / 47% disapprove (Emerson March 2026). 56% say Trump too quick to use force."
+"Foreign Policy - China","Biden was weak on China and allowed it to gain economic and military ground","Trump would impose tariffs and confront China","Campaign trail and debates","Mixed - Biden kept and expanded Trump-era tariffs and chip restrictions on China","Fulfilled: heavy tariffs imposed; trade war escalated.","N/A","N/A","N/A claim largely false. China tariffs subsumed in tariff polling (broadly unpopular - see Trade row)."
+"Foreign Policy - World on Fire","Biden's weakness caused multiple wars and global instability","Only Trump's strength can restore world peace","Rallies and convention","Subjective; experts disagree on cause-and-effect with U.S. presidential strength","Not Fulfilled: The promise to 'restore world peace' was not met - the Ukraine war continued and the U.S. launched a new war with Iran (Feb 2026). By the stated goal there is more armed conflict, not less.","N/A","N/A","N/A - subjective claim. Foreign policy handling net -14 (YouGov June 2025)."
+"Foreign Policy - NATO/Allies","Biden allowed allies to free-ride while America paid","Trump would force NATO members to pay their share","Rallies and interviews","Misleading - NATO defense spending was rising before Trump; 23 of 32 members hit 2% by 2024","Most NATO members now at or above 2% (continuing pre-Trump trend).","N/A","N/A","N/A - original claim was misleading."
+"Energy - Drilling","Biden waged war on American oil and gas and shut down drilling","Trump would Drill Baby Drill and unleash American energy","RNC speech and rallies","Misleading - U.S. oil production hit record highs under Biden (13.3 million b/d)","Fulfilled in rhetoric: BLM lease sales brought in $356.6M; production hit 13.6M b/d record in 2025.","N/A","N/A","N/A claim misleading. For reference, support for expanding oil/gas production: most Republicans support it but only 44% of all registered voters support drilling fossil fuels on public land (Yale April 2025); 49% support expanded offshore drilling (Yale)."
+"Energy - Keystone XL","Biden killed Keystone XL pipeline on Day One destroying jobs","Trump would revive American pipeline projects","Rallies","True that Biden canceled the permit; jobs claim exaggerated","Trump issued EOs to fast-track pipelines; Keystone XL itself was abandoned by TC Energy in 2021.","Responsible - made the explicit decision to revoke the permit Day 1","Responsible for new pipeline policy though Keystone XL specifically was abandoned by sponsor","No pipeline-specific poll found at any date. Historical polling ~45-50% support for pipeline projects generally."
+"Energy - EV Mandate","Biden imposed an electric vehicle mandate killing the auto industry","Trump would end the EV mandate on Day One","RNC speech (explicit promise)","Misleading - Biden set emissions targets not a mandate; consumers could still buy gas cars","Fulfilled: Terminated $7.5B federal EV charger program; rolled back CAFE standards; ended EV tax credits via OBBBA (effective Sept 30 2025).","Partial - chose strict emissions targets and IRA EV subsidies that pushed industry toward EVs","Responsible - actively dismantled the EV transition framework","Charged to Trump's ledger as ~29% approve / 71% disapprove of dismantling clean-energy credits - inverted from the 71% who support electric-appliance tax credits (closest available proxy; no direct poll on the EV credit repeal itself exists). On this site we score consumer-sentiment proxies as a Trump approval signal anyway. Mixed underlying picture: only 31% of Americans would consider buying an EV (Pew 2025), suggesting limited public attachment to the EV mandate itself - which cuts the other way. Industry verdict against Trump: consumer groups and automakers (Ford, GM) opposed abrupt EV credit repeal as harmful to US industry."
+"Energy - Strategic Petroleum Reserve","Biden drained the Strategic Petroleum Reserve for political reasons","Trump would refill the SPR and ensure energy security","Rallies","Partly true that Biden drew it down; SPR was at ~350M barrels (half full)","Not fulfilled: Trump drew down additional 172M barrels during 2025 Iran crisis.","Responsible - chose to release 180M barrels in 2022 to address gas prices after Russia invasion","Responsible - drew down additional 172M barrels rather than refilling as promised","N/A - Trump did not follow through on refilling promise; no direct polling on SPR action at any date."
+"Trade - Manufacturing","Biden allowed American manufacturing jobs to be shipped overseas","Trump would impose tariffs to bring jobs home","Rallies in Rust Belt states","False - manufacturing employment grew under Biden","Mixed: Tariffs led to some announced reshoring but also industry layoffs.","N/A","N/A","N/A claim false. For reference, 59% think tariffs will help create US manufacturing jobs (ABC/WaPo/Ipsos April 2025) even as they disapprove of tariffs overall."
+"Trade - Tariffs","Biden refused to use tariffs effectively to protect U.S. industry","Trump would impose tariffs on China and other adversaries","Campaign and debates","Misleading - Biden kept Trump's China tariffs and added new ones (EVs solar etc)","Fulfilled aggressively: Broad tariffs imposed; SCOTUS struck down IEEPA tariffs Feb 2026.","N/A","N/A","Consistently very unpopular: 61% disapprove (NBC June 2025); 60% disapprove / 37% approve (Pew Jan 2026); 63% disapprove / 37% approve (Fox Jan 2026); 62% disapprove (CNN Jan 2026); 64% disapprove (ABC/WaPo/Ipsos Feb 2026); 70%-28% disapproval among Asian Americans (Pew April 2026). Among Trump's worst issues throughout."
+"Democracy/Justice - Lawfare","Biden weaponized the Department of Justice to prosecute political opponents (Trump himself)","Trump would end weaponization of justice; voters should reject this two-tier system","Rallies and Truth Social","Contested - investigations were conducted by special counsels (Smith, Hur)","Reversed but inverted: ""Weaponization Working Group""; $1.8B settlement fund for Trump allies and J6 defendants; investigations against Biden-era officials.","Contested","Responsible - actively directing investigations and pardons of allies","Trump's $1.776B 'anti-weaponization fund' (announced May 2026) is broadly rejected,  including by his own base: a late-May 2026 poll reported by Forbes found ~50% of MAGA supporters oppose it. It also triggered an open GOP revolt in Congress - Sen. Susan Collins and others refused to back it,  Ted Cruz said about half of Senate Republicans were unhappy,  and Senate leaders shelved a $72B immigration-enforcement bill over it (CNN,  Reuters,  NBC,  Deseret,  May 2026). Broader 'weaponization' framing aside,  the specific fund polls and plays badly across the spectrum."
+"Democracy/Justice - FBI Raid","Biden authorized the Mar-a-Lago raid against a political opponent","Trump would restore equal justice and end politicized investigations","Rallies and interviews","Misleading - DOJ/FBI obtained a judge-approved warrant; Biden had no direct role","DOJ dropped the documents case after Trump won.","N/A","N/A","N/A - original claim was misleading."
+"Democracy/Justice - Free Speech","Biden colluded with social media to censor conservatives","Trump would restore free speech and dismantle the censorship-industrial complex","Agenda 47 videos","Mixed - some federal contact with platforms documented; Supreme Court (Murthy v Missouri 2024) found no standing","EO banning federal censorship coordination; FCC and FTC pressure on broadcasters and platforms.","Partial - White House and CDC did flag content to platforms during COVID; Court found no unconstitutional coercion","Responsible - new administration pressures on broadcasters and platforms","No specific poll on the free-speech EO found at any date. Early 2025 polling showed ~50% supported ending federal censorship coordination in the abstract."
+"Government - Deep State","Biden empowered an unaccountable deep state bureaucracy","Trump would dismantle the deep state and reinstate Schedule F","Agenda 47 and rallies","Subjective political framing","Fulfilled: Schedule F reinstated; mass federal firings; ~386,826 federal departures Jan 2025-Jan 2026; DOGE established (later dissipated).","N/A","N/A","N/A original claim. Pattern: Americans like 'downsizing' in abstract (46-40% say DOGE good idea, NBC March 2025) but oppose execution: 60% disapprove DOGE handling of workers (Quinnipiac March 2025); 54% say DOGE hurting country (Quinnipiac); 53% oppose the effort overall (Reuters/Ipsos 2025). By 2026 many cuts were being reversed/rehired (NWS, FAA, VA)."
+"Government - Spending","Biden's massive spending bills fueled inflation and ballooned the debt","Trump would cut waste and restore fiscal discipline","Campaign trail","Partly true - ARP contributed to inflation per many economists; debt rose under both presidents","Not fulfilled on debt: 'One Big Beautiful Bill' projected to add several trillion to debt.","Responsible - ARP IRA CHIPS and infrastructure bill all added trillions in spending","Responsible - One Big Beautiful Bill tax cuts add trillions to debt despite tariff offset","Not fulfilled. One Big Beautiful Bill: 46% disapprove / 32% approve (Pew Aug 2025). Even DOGE's own staffer admitted in Jan deposition DOGE failed to reduce the deficit."
+"Government - Regulations","Biden imposed crushing regulations on businesses and farmers","Trump would slash regulations as he did in his first term","Rallies","True that Biden issued many rules; impact contested","Fulfilled: EO 14192 '10-for-1' deregulation (Jan 2025); repealed endangerment finding; rolled back hundreds of Biden-era rules.","Responsible - chose to issue extensive new rules across EPA labor financial agencies","Responsible - chose to roll them back","General 'deregulation' historically polls 40-50% approval; specific environmental rollbacks less popular. No dedicated approve/disapprove poll on the deregulation EO found at any date."
+"Education - Schools","Biden's Education Department pushed woke ideology and transgender policies into schools","Trump would return education to parents and the states","Agenda 47 videos","Mixed - Biden's Title IX rewrite was controversial but federal role in curriculum is limited","Fulfilled: Department of Education being dismantled (EO March 20 2025); EOs on gender ideology and DEI in schools.","Responsible - chose the Title IX rewrite and federal guidance","Responsible - chose to dismantle Department of Education and reverse policies","HIGHLY FRAMING-DEPENDENT: Abolishing/dismantling Dept of Education opposed ~2-to-1 (Data for Progress Feb 2025); 60%+ oppose moving its functions elsewhere incl 43% of Republicans (New America March 2025). BUT when framed as 'families not bureaucrats' with protections kept, 56% support dismantling / 30% oppose (Yes Every Kid Foundation Nov 2025). The framing gap is itself the story."
+"Education - Title IX","Biden rewrote Title IX to allow biological males in women's sports and spaces","Trump would protect women's sports and restore the original Title IX","Rallies","Partly true - 2024 rule expanded gender identity protections; sports provision was separate and delayed","Fulfilled: Biden Title IX rule rescinded; EO banning trans athletes in women's sports (Feb 5 2025).","Responsible - chose to issue the 2024 Title IX rule","Responsible - chose to rescind it","Consistently popular though softening: 69-70% say trans athletes should compete only by birth sex (Gallup May 2023 and May 2025); 66% support birth-sex sports laws (Pew Feb 2025); 75% disagreed with trans women in women's sports (NBC April 2025); 68% support state bans (Center Square/Noble March 2026, incl 49% independents); 47% approve EO / 34% disapprove with 19% unsure (Siena April 2026); opposition narrowed 65-35 → 59-41 at HS level (Siena 2025→2026). Most popular of Trump's follow-throughs."
+"Military - Woke Pentagon","Biden imposed woke DEI policies on the military weakening readiness","Trump would end DEI in the military and restore the warrior culture","Rallies and Agenda 47","Subjective; readiness data did not show DEI-caused decline","Fulfilled: DEI offices eliminated; trans service members discharged.","N/A","N/A","N/A original claim. DEI rollback polled ~45-55% support (2025); trans military service more divisive (~58% support trans service per Gallup mid-2025)."
+"Military - Recruitment","Biden's policies caused recruitment to collapse","Trump would rebuild military strength and morale","Rallies","Partly true - recruitment fell 2021-23; recovered partially in 2024","Recruitment numbers reported up in 2025; multiple factors at play.","Mixed - tight labor market and pandemic effects were larger drivers than policy; recovery began under Biden","Mixed - claims credit for recruitment numbers that began recovering before he took office","No specific recruitment-handling poll found at any date. Military handling generally ~50% approve."
+"Health - COVID Mandates","Biden imposed vaccine and mask mandates that harmed Americans and the economy","Trump would protect medical freedom and never impose mandates","Rallies","True that mandates were imposed; harm contested","Fulfilled: no federal COVID mandates; COVID vaccine EUA-based mandates rescinded (Aug 2025); HHS under RFK Jr. restructuring vaccine policy.","Responsible - chose to issue federal contractor and large-employer vaccine mandates","Responsible - has not imposed any new health mandates as promised","'Medical freedom' framing polls well: ~90% of voters support the right to refuse medical treatment (Zogby Feb 2026); but the BROADER RFK Jr. vaccine changes are contested and have been partly blocked by courts (Mass. federal judge, March 2026)."
+"Health - Pharmaceutical/CDC","Biden allowed federal health agencies to lose public trust","Trump would reform federal health agencies (later aligned with RFK Jr.)","Campaign trail","Subjective - polling showed declining trust during pandemic","Major upheaval: RFK Jr. fired all 17 ACIP members; new vaccine schedule (11 vs 17 diseases); CDC/NIH/FDA layoffs; courts blocked some changes (March 2026).","Mixed - trust declines began under Trump's first term during COVID and continued under Biden","Responsible - radical restructuring of health agencies under RFK Jr.","Charged to Trump's ledger as Trump-negative on institutional verdict - no clean consumer approve/disapprove poll exists,  so this row's badge stays gray,  but on this site we score the institutional verdict as a Trump approval signal anyway and it is heavily against him: hundreds of NIH scientists publicly protested (June 2025); six medical orgs incl American Academy of Pediatrics sued; federal court blocked ACIP/vaccine-schedule changes (March 2026)."
+"Mental Fitness - Cognitive Decline","Biden was mentally and physically unfit to be president; sleepy/crooked/confused","Trump would bring energy stamina and clear leadership","Debates and rallies (constant theme)","Subjective but evidence mounted; June 2024 debate accelerated concerns; Biden withdrew July 2024","N/A but reversed framing - Trump (oldest president ever inaugurated) faces own questions.","Responsible - chose to run for reelection despite questions; withdrew only in July 2024","N/A","N/A - not a follow-through action to poll."
+"Mental Fitness - Decisions Made by Others","Biden was not really running the country; unelected staffers were","Trump would actually be in charge and accountable","Rallies and interviews","Speculative; some reports suggested limited Biden engagement on details","Fulfilled: Trump highly visible and central to decisions.","N/A","N/A","N/A claim speculative. Note: Musk/DOGE's outsized early role drew 54% 'hurting the country' (Quinnipiac March 2025)."
+"Corruption - Biden Family","Biden family received millions from foreign sources (Hunter Biden laptop China Ukraine)","Trump would end Biden-family-style corruption and pursue accountability","Rallies and interviews","Hunter Biden had foreign business deals; direct payments to Joe Biden not established by House investigation","Not Fulfilled (on the promise to end Biden-style corruption): Trump family business activities continue; investigations launched against Bidens.","Partial - Hunter's foreign deals occurred during Biden's VP years; Joe's direct involvement not established","N/A on the original promise but Trump family commercial activities have continued/expanded","No specific poll on Biden-family investigations or Trump family business ethics found at any date. Mid-2025 polling showed Biden-investigation support ~40%; ~55% concerned about Trump family conflicts."
+"Corruption - Pardons","Biden pardoned his son Hunter after promising he would not","Trump would not abuse the pardon power in similar ways","Truth Social and rallies","True - Biden did pardon Hunter in Dec 2024 after saying he wouldn't","Not fulfilled: Mass-pardoned ~1,500 J6 defendants Day 1 including violent offenders.","Responsible - personally made the decision to pardon his son after public promises not to","Responsible - chose to mass-pardon J6 defendants including violent offenders breaking his own framing","Very unpopular: 58% opposed all J6 pardons (Reuters/Ipsos Jan 2025); 83% disapprove pardons for violent offenders, 55% for nonviolent (WaPo/Ipsos Feb 2025); 75% oppose pardons for those who used weapons incl 55% of Republicans, 73% oppose for those who assaulted police incl 54% of Republicans (YouGov/Protect Democracy Oct 2025). House Judiciary Dems (Jan 2026): 33 pardoned individuals re-arrested for new crimes."
+"Federal Lands - Public Lands","Biden closed 670 million acres of U.S. lands and waters to oil and gas drilling","Trump would reopen federal lands for energy production","Rallies and Agenda 47","True on acreage withdrawn (though leasing continued)","Fulfilled: Reopened Outer Continental Shelf; expanded BLM lease sales.","Responsible - chose to issue the withdrawal memoranda including January 2025 OCS withdrawal","Responsible - chose to reverse these where legally possible","Net unpopular: only 44% of registered voters support drilling fossil fuels on public land, 49% support offshore drilling, 30% support ANWR drilling (Yale April 2025); auctioning public land for oil drilling supported by only 13% of young Republicans vs 42% of Republicans 60+ (EPIC/U Chicago Oct 2025). 76% support renewable energy on public land (Yale)."
+"Inflation Reduction Act","Biden's so-called Inflation Reduction Act was a Green New Deal scam that made inflation worse","Trump would repeal Green New Deal subsidies","Rallies and RNC","Mixed - IRA had limited inflation impact per CBO; was largely climate/energy spending","Largely repealed: One Big Beautiful Bill (July 4 2025) killed most clean energy credits.","Responsible - signed the IRA into law","Responsible - signed One Big Beautiful Bill repealing most of it","OBBBA (vehicle for repeal): 46% disapprove / 32% approve (Pew Aug 2025). Specific clean-energy credits popular individually: 71% support electric-appliance tax credits, 67% support 100% clean energy by 2050 (Yale Spring 2025) - repeal cut against majority preferences on the components even though the IRA brand polled poorly."
+"American Decline","Under Biden America was a nation in decline; a laughingstock; a third-world country","Trump would Make America Great Again again","RNC speech and rallies","Subjective hyperbole; objective indicators mixed","Mixed reception: Trump claims renewed greatness; polls show low consumer sentiment.","N/A","N/A","N/A subjective. Trump overall approval: 36-40% (Reuters/Ipsos, Economist, YouGov March-May 2026, lowest of 2nd term); 53% say admin not putting America first, up from 41% a year prior (Emerson March 2026)."
+"Veterans","Biden failed veterans particularly Gold Star families after Afghanistan","Trump would honor and care for veterans","Arlington and rallies","Subjective; some Gold Star families have praised Trump's outreach","Largely Not Fulfilled: VA leadership changes and DOGE-era VA layoffs (later partly reversed after backlash; VA clinicians placed on OPM rehire-priority list); some PACT Act funding disputes. Concrete actions cut against veterans before being partly walked back.","N/A","N/A","Charged to Trump's ledger as Trump-negative on real-world reversal - no dedicated veterans-handling poll exists,  so this row's badge stays gray,  but on this site we score the institutional reversal as a Trump approval signal anyway: VA was among agencies forced to rehire after DOGE cuts (VA clinicians placed on OPM rehire-priority list,  early 2026),  signaling the cuts landed as harmful enough to walk back."
+"January 6/Hostages","Biden persecuted January 6 defendants as political prisoners","Trump would pardon J6 defendants on Day One","Rallies","Misleading - they were convicted via normal judicial process, some violently assaulted police","Fulfilled aggressively: Mass pardons Jan 20, 2025 for ~1,500 defendants including violent offenders.","N/A","N/A","N/A original claim. Pardons themselves consistently unpopular: 58% opposed (Reuters/Ipsos Jan 2025); 83% oppose for violent offenders (WaPo/Ipsos Feb 2025); 53% disapprove even in Utah (Deseret/Hinckley Feb 2025); 73-75% oppose for police-assaulters/weapon-users incl majority of Republicans (YouGov/Protect Democracy Oct 2025). House Judiciary Dems (Jan 2026): 33 re-arrested for new crimes."
+"2020 Election","Biden won through what Trump alleges was a rigged 2020 election","A Trump win would correct the alleged injustice of 2020","Rallies and Truth Social","False - no credible evidence of widespread fraud per courts election officials and Trump's own DOJ/CISA","N/A but ongoing: Trump continues to dispute 2020; investigations into 2020 officials.","N/A","N/A","N/A original claim false. Investigations into 2020 election officials polled ~55% oppose (early 2025)."`;
+
+/* -----------------------------
+   CSV parser (handles quoted fields with commas, and escaped quotes "")
+------------------------------ */
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let i = 0;
+  let inQuotes = false;
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 2;
+          continue;
+        }
+        inQuotes = false;
+        i++;
+        continue;
+      }
+      field += c;
+      i++;
+      continue;
+    } else {
+      if (c === '"') { inQuotes = true; i++; continue; }
+      if (c === ',') { row.push(field); field = ''; i++; continue; }
+      if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+      if (c === '\r') { i++; continue; }
+      field += c;
+      i++;
+    }
+  }
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+const rows = parseCSV(CSV_TEXT);
+const headers = rows[0];
+const data = rows.slice(1).map(r => {
+  const obj = {};
+  headers.forEach((h, idx) => { obj[h] = (r[idx] || '').trim(); });
+  return obj;
+});
+
+const COL = {
+  category: "Category",
+  claim: "Trump's Claim About Biden's Term",
+  reason: "Trump's Implied/Stated Reason to Elect Him Instead",
+  context: "Notable Context/Venue",
+  factCheck: "Fact-Check Status of Original Claim",
+  record: "Trump's Second-Term Record on This Issue (as of May 2026)",
+  bidenResp: "Biden Responsibility (if claim was at least partially true)",
+  trumpResp: "Trump Responsibility (if claim was at least partially true)",
+  approval: "Public Approval of Trump's Follow-Through (all polling with dates)"
+};
+
+/* Group rows by top-level category (text before " - "); keep subcategory as suffix. */
+function topCategory(full) {
+  const idx = full.indexOf(' - ');
+  return idx === -1 ? full : full.slice(0, idx);
+}
+function subCategory(full) {
+  const idx = full.indexOf(' - ');
+  return idx === -1 ? '' : full.slice(idx + 3);
+}
+
+const grouped = {};
+data.forEach(r => {
+  const top = topCategory(r[COL.category]);
+  if (!grouped[top]) grouped[top] = [];
+  grouped[top].push(r);
+});
+const categoryNames = Object.keys(grouped);
+
+/* -----------------------------
+   Router / state
+------------------------------ */
+const state = {
+  page: 'summary', // summary | claim | record | approval
+  category: null,
+  claimIndex: 0
+};
+
+const PAGE_LABELS = {
+  summary: 'Summary',
+  claim: 'The Claim',
+  record: "Trump's 2nd Term Record",
+  approval: 'What Do Americans Think?'
+};
+
+function snapshotState() {
+  return { page: state.page, category: state.category, claimIndex: state.claimIndex };
+}
+
+let summaryScroll = 0;
+
+function applyScroll(top) {
+  // rAF so the new content has been laid out before we set scrollY
+  requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' }));
+}
+
+function go(page, opts) {
+  opts = opts || {};
+  if (state.page === 'summary' && page !== 'summary') {
+    summaryScroll = window.scrollY;
+  }
+  state.page = page;
+  if (opts.category !== undefined) state.category = opts.category;
+  if (opts.claimIndex !== undefined) state.claimIndex = opts.claimIndex;
+  history.pushState(snapshotState(), '');
+  render();
+  applyScroll(page === 'summary' ? summaryScroll : 0);
+}
+
+window.addEventListener('popstate', (e) => {
+  const targetPage = e.state ? e.state.page : 'summary';
+  if (state.page === 'summary' && targetPage !== 'summary') {
+    summaryScroll = window.scrollY;
+  }
+  if (e.state) {
+    state.page = e.state.page;
+    state.category = e.state.category;
+    state.claimIndex = e.state.claimIndex;
+  } else {
+    state.page = 'summary';
+    state.category = null;
+    state.claimIndex = 0;
+  }
+  render();
+  applyScroll(state.page === 'summary' ? summaryScroll : 0);
+});
+
+/* -----------------------------
+   Render helpers
+------------------------------ */
+function escapeHTML(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderCrumbs() {
+  const crumbs = document.getElementById('crumbs');
+  if (state.page === 'summary') {
+    crumbs.innerHTML = '';
+    return;
+  }
+  const parts = [`<a data-go="summary">Summary</a>`];
+  if (state.category) {
+    parts.push(' &rsaquo; ');
+    parts.push(`<span>${escapeHTML(state.category)}</span>`);
+    parts.push(' &rsaquo; ');
+    parts.push(`<span>${escapeHTML(PAGE_LABELS[state.page])}</span>`);
+  }
+  crumbs.innerHTML = parts.join('');
+  crumbs.querySelectorAll('a[data-go]').forEach(a => {
+    a.addEventListener('click', () => go(a.dataset.go));
+  });
+}
+
+function renderProgress() {
+  if (state.page === 'summary') return '';
+  const steps = ['claim', 'record', 'approval'];
+  return `<div class="progress">${steps.map(s => {
+    const i = steps.indexOf(s);
+    const ci = steps.indexOf(state.page);
+    const cls = i < ci ? 'done' : (i === ci ? 'active' : '');
+    return `<div class="step ${cls}" title="${PAGE_LABELS[s]}"></div>`;
+  }).join('')}</div>`;
+}
+
+function currentClaim() {
+  return grouped[state.category][state.claimIndex];
+}
+
+function isEmpty(val) {
+  if (!val) return true;
+  const v = val.trim().toLowerCase();
+  return v === '' || v === 'n/a' || v.startsWith('n/a ');
+}
+
+function extractApprovalPercent(text) {
+  if (!text) return null;
+  // 1) approve/support first (priority)
+  let m = text.match(/(\d+)(?:\s*-\s*\d+)?\s*%\s*\b(?:approv|support)\w*/i);
+  if (m) return parseInt(m[1], 10);
+  m = text.match(/\b(?:approv|support)\w*\b[^.0-9]{0,25}~?\s*(\d+)(?:\s*-\s*\d+)?\s*%/i);
+  if (m) return parseInt(m[1], 10);
+  // 2) disapprove/oppose (inverted)
+  m = text.match(/(\d+)(?:\s*-\s*\d+)?\s*%\s*\b(?:disapprov|oppos)\w*/i);
+  if (m) return 100 - parseInt(m[1], 10);
+  m = text.match(/\b(?:disapprov|oppos)\w*\b[^.0-9]{0,25}~?\s*(\d+)(?:\s*-\s*\d+)?\s*%/i);
+  if (m) return 100 - parseInt(m[1], 10);
+  // 3) blame Trump / blaming the Trump admin (inverted; counts as disapprove)
+  m = text.match(/(\d+)(?:\s*-\s*\d+)?\s*%\s+(?:say(?:ing)?\s+)?blam\w*[^.0-9]{0,40}\b(?:trump|him|admin)\b/i);
+  if (m) return 100 - parseInt(m[1], 10);
+  m = text.match(/\bblam\w*\b[^.0-9]{0,30}?\b(?:trump|him|admin)[^.0-9]{0,40}?(\d+)(?:\s*-\s*\d+)?\s*%/i);
+  if (m) return 100 - parseInt(m[1], 10);
+  // 4) trust (treat as approve-like)
+  m = text.match(/\btrust\w*\b[^.]{0,60}?(\d+)\s*%\s*Trump/i);
+  if (m) return parseInt(m[1], 10);
+  return null;
+}
+
+function classifyApproval(text) {
+  const t = (text || '').trim().toLowerCase();
+  if (!t || t.startsWith('n/a')) return { cls: 'app-na', label: 'No Polling', pct: null };
+  const pct = extractApprovalPercent(text);
+  if (pct !== null) {
+    if (pct >= 60) return { cls: 'app-green', label: `~${pct}% Approve`, pct };
+    if (pct >= 50) return { cls: 'app-yellow', label: `~${pct}% Approve`, pct };
+    return { cls: 'app-red', label: `~${pct}% Approve`, pct };
+  }
+  // Qualitative fallback: when no clean approve/disapprove percent surfaces,
+  // map breadth-of-rejection or breadth-of-support phrasing to a red/green badge.
+  const negCues = /\bbroadly\s+(rejected|opposed|contested|unpopular|negative)\b|\bheavily\s+(against|opposed|contested)\b|\btrump[-\s]negative\b|\bnet[-\s]negative\b|\bplays?\s+badly\s+across\s+the\s+spectrum\b/i;
+  const posCues = /\bbroadly\s+(supported|popular|approved|positive)\b|\bheavily\s+(supported|approved|popular)\b|\btrump[-\s]positive\b|\bnet[-\s]positive\b/i;
+  if (negCues.test(text)) return { cls: 'app-red', label: 'Broadly Negative', pct: null };
+  if (posCues.test(text)) return { cls: 'app-green', label: 'Broadly Positive', pct: null };
+  return { cls: 'app-na', label: 'Unclear', pct: null };
+}
+
+function classifyRecord(text) {
+  const t = (text || '').trim().toLowerCase();
+  if (!t || t.startsWith('n/a')) return { cls: 'rec-na', label: 'N/A' };
+  // Strong Not-Fulfilled signals (checked first so qualifiers like "then reversed" override "partially fulfilled")
+  if (t.startsWith('not fulfilled')) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  if (t.startsWith('largely not fulfilled')) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  if (t.startsWith('largely unchanged')) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  if (t.startsWith('reversed but inverted')) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  if (/\bthen\s+(?:fully\s+|largely\s+|re-?)?reversed\b/.test(t)) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  // Partly fulfilled / mixed
+  if (t.startsWith('partially fulfilled') || t.startsWith('partly fulfilled')) return { cls: 'rec-yellow', label: 'Partly Fulfilled' };
+  if (t.startsWith('mixed') || t.startsWith('genuinely mixed')) return { cls: 'rec-yellow', label: 'Partly Fulfilled' };
+  // Fulfilled
+  if (t.startsWith('fulfilled') || t.startsWith('largely fulfilled') || t.startsWith('largely repealed')) return { cls: 'rec-green', label: 'Fulfilled' };
+  // Fallback substring checks
+  if (t.includes('not fulfilled')) return { cls: 'rec-red', label: 'Not Fulfilled' };
+  if (t.includes('fulfilled')) return { cls: 'rec-green', label: 'Fulfilled' };
+  return { cls: 'rec-yellow', label: 'Partly Fulfilled' };
+}
+
+function classifyFactCheck(text) {
+  const t = (text || '').trim().toLowerCase();
+  if (!t) return { cls: 'fc-mixed', label: 'Unrated' };
+  if (t.startsWith('mostly true') || t.startsWith('partly true')) return { cls: 'fc-mixed', label: 'Partly True' };
+  if (t.startsWith('largely false')) return { cls: 'fc-false', label: 'Largely False' };
+  if (t.startsWith('true')) return { cls: 'fc-true', label: 'True' };
+  if (t.startsWith('false')) return { cls: 'fc-false', label: 'False' };
+  if (t.startsWith('misleading')) return { cls: 'fc-false', label: 'Misleading' };
+  if (t.startsWith('mixed')) return { cls: 'fc-mixed', label: 'Mixed' };
+  if (t.startsWith('contested')) return { cls: 'fc-mixed', label: 'Contested' };
+  if (t.startsWith('unfalsifiable')) return { cls: 'fc-mixed', label: 'Unfalsifiable' };
+  if (t.startsWith('subjective')) return { cls: 'fc-mixed', label: 'Subjective' };
+  if (t.startsWith('speculative')) return { cls: 'fc-mixed', label: 'Speculative' };
+  return { cls: 'fc-mixed', label: 'Mixed' };
+}
+
+/* Map any classifier output class suffix to a traffic-light color. */
+function pillColor(cls) {
+  if (!cls) return 'gray';
+  if (cls.endsWith('-true') || cls.endsWith('-green')) return 'green';
+  if (cls.endsWith('-mixed') || cls.endsWith('-yellow')) return 'yellow';
+  if (cls.endsWith('-false') || cls.endsWith('-red')) return 'red';
+  return 'gray';
+}
+
+function renderSummary() {
+  const sections = categoryNames.map(cat => {
+    const rows = grouped[cat].map((r, idx) => {
+      const sub = subCategory(r[COL.category]);
+      const fc = classifyFactCheck(r[COL.factCheck]);
+      const rec = classifyRecord(r[COL.record]);
+      const app = classifyApproval(r[COL.approval]);
+      const colors = [pillColor(fc.cls), pillColor(rec.cls), pillColor(app.cls)];
+      const worst = colors.includes('red') ? 'red'
+                  : colors.includes('yellow') ? 'yellow'
+                  : colors.includes('green') ? 'green' : 'gray';
+      return `
+        <button class="summary-row row-${worst}" data-cat="${escapeHTML(cat)}" data-idx="${idx}">
+          <div class="summary-claim">
+            ${sub ? `<span class="sub">${escapeHTML(sub)}</span>` : ''}
+            <span class="text">${escapeHTML(r[COL.claim])}</span>
+          </div>
+          <div class="tl-cell" data-label="Fact Check">
+            <span class="tl-dot tl-${pillColor(fc.cls)}"></span>${escapeHTML(fc.label)}
+          </div>
+          <div class="tl-cell" data-label="Record">
+            <span class="tl-dot tl-${pillColor(rec.cls)}"></span>${escapeHTML(rec.label)}
+          </div>
+          <div class="tl-cell" data-label="Approval">
+            <span class="tl-dot tl-${pillColor(app.cls)}"></span>${escapeHTML(app.label)}
+          </div>
+        </button>
+      `;
+    }).join('');
+    return `
+      <section class="summary-section">
+        <h3 class="summary-section-title">${escapeHTML(cat)}</h3>
+        ${rows}
+      </section>
+    `;
+  }).join('');
+
+  const html = `
+    <h2 class="page-title">All claims at a glance</h2>
+    <p class="summary-intro">Every claim Trump made about Biden's term, with traffic lights for the fact-check of the original claim, Trump's second-term record, and public approval of his follow-through. Click any row to dig in.</p>
+    <div class="summary-head">
+      <div>Claim</div>
+      <div>Fact Check</div>
+      <div>2nd Term Record</div>
+      <div>Public Approval</div>
+    </div>
+    ${sections}
+  `;
+  document.getElementById('app').innerHTML = html;
+  document.querySelectorAll('.summary-row').forEach(b => {
+    b.addEventListener('click', () => go('claim', {
+      category: b.dataset.cat,
+      claimIndex: parseInt(b.dataset.idx, 10)
+    }));
+  });
+  attachNavButtons();
+}
+
+function renderClaim() {
+  const r = currentClaim();
+  const sub = subCategory(r[COL.category]);
+  const html = `
+    ${renderProgress()}
+    <h2 class="page-title">The Claim</h2>
+    <p class="page-sub">${escapeHTML(state.category)}${sub ? ' &middot; ' + escapeHTML(sub) : ''}</p>
+    <div class="cards">
+      <div class="card">
+        ${sub ? `<span class="subcat">${escapeHTML(sub)}</span>` : ''}
+        <p class="claim">${escapeHTML(r[COL.claim])}</p>
+        <div class="meta-row">
+          <div class="reason" style="margin:0;">
+            <span class="label">1. Trump's reason you should pick him</span>
+            ${escapeHTML(r[COL.reason])}
+          </div>
+          <div class="meta">
+            <span class="label">2. Notable context / venue</span>
+            ${escapeHTML(r[COL.context]) || '<span class="empty">No context recorded</span>'}
+          </div>
+          ${(() => {
+            const fc = classifyFactCheck(r[COL.factCheck]);
+            return `
+              <div class="meta fact-check ${fc.cls}">
+                <span class="label">3. Fact-check of the original claim</span>
+                <span class="rating-pill">${fc.label}</span>
+                <div>${escapeHTML(r[COL.factCheck]) || '<span class="empty">Not rated</span>'}</div>
+              </div>
+            `;
+          })()}
+          ${!isEmpty(r[COL.bidenResp]) ? `
+            <div class="meta biden">
+              <span class="label">4. Biden's responsibility</span>
+              ${escapeHTML(r[COL.bidenResp])}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-go="summary">&larr; Back to Summary</button>
+      <button class="btn" data-go="record">Trump's 2nd Term Record &rarr;</button>
+    </div>
+  `;
+  document.getElementById('app').innerHTML = html;
+  attachNavButtons();
+}
+
+function renderRecord() {
+  const r = currentClaim();
+  const sub = subCategory(r[COL.category]);
+  const rec = classifyRecord(r[COL.record]);
+  const html = `
+    ${renderProgress()}
+    <h2 class="page-title">Trump's 2nd Term Record</h2>
+    <p class="page-sub">${escapeHTML(state.category)}${sub ? ' &middot; ' + escapeHTML(sub) : ''} &middot; what's actually happened, as of May 2026.</p>
+    <div class="cards">
+      <div class="card">
+        ${sub ? `<span class="subcat">${escapeHTML(sub)}</span>` : ''}
+        <p class="claim">${escapeHTML(r[COL.claim])}</p>
+        <div class="meta-row">
+          <div class="meta record ${rec.cls}">
+            <span class="label">1. Trump's 2nd-term record on this issue (May 2026)</span>
+            <span class="rating-pill">${rec.label}</span>
+            <div>${escapeHTML(r[COL.record]) || '<span class="empty">No record recorded</span>'}</div>
+          </div>
+          ${!isEmpty(r[COL.trumpResp]) ? `
+            <div class="meta trump">
+              <span class="label">2. Trump's responsibility</span>
+              ${escapeHTML(r[COL.trumpResp])}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-go="claim">&larr; Back to the Claim</button>
+      <button class="btn" data-go="approval">What do Americans Think? &rarr;</button>
+    </div>
+  `;
+  document.getElementById('app').innerHTML = html;
+  attachNavButtons();
+}
+
+function renderApproval() {
+  const r = currentClaim();
+  const sub = subCategory(r[COL.category]);
+  const html = `
+    ${renderProgress()}
+    <h2 class="page-title">What Do Americans Think</h2>
+    <p class="page-sub">${escapeHTML(state.category)}${sub ? ' &middot; ' + escapeHTML(sub) : ''} &middot; public-approval polling on Trump's follow-through.</p>
+    <div class="cards">
+      <div class="card">
+        ${sub ? `<span class="subcat">${escapeHTML(sub)}</span>` : ''}
+        <p class="claim">${escapeHTML(r[COL.claim])}</p>
+        ${(() => {
+          const app = classifyApproval(r[COL.approval]);
+          return `
+            <div class="meta approval ${app.cls}">
+              <span class="label">Public approval of Trump's follow-through</span>
+              <span class="rating-pill">${app.label}</span>
+              <div>${isEmpty(r[COL.approval]) ? '<span class="empty">No relevant polling found</span>' : escapeHTML(r[COL.approval])}</div>
+            </div>
+          `;
+        })()}
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-go="record">&larr; Back to Record</button>
+      <button class="btn secondary" data-go="summary">Back to Summary</button>
+    </div>
+  `;
+  document.getElementById('app').innerHTML = html;
+  attachNavButtons();
+}
+
+function attachNavButtons() {
+  document.querySelectorAll('[data-go]').forEach(b => {
+    b.addEventListener('click', () => go(b.dataset.go));
+  });
+}
+
+function render() {
+  renderCrumbs();
+  switch (state.page) {
+    case 'summary': renderSummary(); break;
+    case 'claim': renderClaim(); break;
+    case 'record': renderRecord(); break;
+    case 'approval': renderApproval(); break;
+  }
+}
+
+history.replaceState(snapshotState(), '');
+render();
+</script>
+</body>
+</html>
