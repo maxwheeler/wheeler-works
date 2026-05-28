@@ -38,3 +38,8 @@ pnpm-debug.log*
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
+
+# Unlisted pages — kept on disk for deploys, but not in the public repo.
+# Each entry below is an obscure-URL page served via Firebase Hosting that
+# we deliberately don't track in git so the source isn't browsable on GitHub.
+/public/Rda8tKGw1kbT89mJ/
