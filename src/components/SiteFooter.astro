@@ -3,7 +3,10 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-border mt-24">
-  <div class="mx-auto max-w-3xl px-6 py-6 text-xs text-muted-foreground">
-    &copy; {year} Max Wheeler
+  <div
+    class="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between text-xs text-muted-foreground"
+  >
+    <span>&copy; {year} Max Wheeler</span>
+    <a href="/terms-privacy" class="hover:text-foreground">Terms &amp; Privacy</a>
   </div>
 </footer>

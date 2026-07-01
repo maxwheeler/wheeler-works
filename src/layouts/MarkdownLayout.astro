@@ -1,0 +1,17 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Prose from "@wheeler-works/ui-astro/Prose.astro";
+
+interface Frontmatter {
+  title: string;
+  description?: string;
+}
+
+const { frontmatter } = Astro.props as { frontmatter: Frontmatter };
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <Prose>
+    <slot />
+  </Prose>
+</BaseLayout>
