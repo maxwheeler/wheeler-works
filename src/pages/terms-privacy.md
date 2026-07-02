@@ -6,7 +6,7 @@ description: Terms of use and privacy policy for Wheeler Works and the tools lin
 
 # Terms of Use & Privacy
 
-*Last updated: [Month Year]*
+*Last updated: July 2026*
 
 WheelerWorks is a personal project by Max Wheeler — a catalog of free tools and games I build for fun and share with anyone who finds them useful. This page explains the ground rules for using them and how your information is handled. I've tried to keep it in plain English.
 
