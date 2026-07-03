@@ -2,29 +2,19 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Prose from "@wheeler-works/ui-astro/Prose.astro";
-import ToolGrid, { type ToolCard } from "../components/ToolGrid";
 import HomeIntro from "../content/home-intro.mdx";
 
 const entries = await getCollection("tools");
 
-const tools: ToolCard[] = entries
+const tools = entries
   .map((entry) => ({
     slug: entry.id,
     title: entry.data.title,
     description: entry.data.description,
     iconSrc: entry.data.icon?.src ?? null,
-    tags: entry.data.tags,
-    platforms: entry.data.platforms,
-    status: entry.data.status,
     date: entry.data.date.toISOString(),
-    featured: entry.data.featured,
-    githubUrl: entry.data.githubUrl,
   }))
   .sort((a, b) => b.date.localeCompare(a.date));
-
-const allTags = Array.from(new Set(tools.flatMap((t) => t.tags))).sort((a, b) =>
-  a.localeCompare(b),
-);
 ---
 
 <BaseLayout
@@ -37,5 +27,40 @@ const allTags = Array.from(new Set(tools.flatMap((t) => t.tags))).sort((a, b) =>
     <HomeIntro />
   </Prose>
 
-  <ToolGrid client:load tools={tools} allTags={allTags} />
+  <ul class="grid gap-4">
+    {
+      tools.map((tool) => (
+        <li>
+          <a
+            href={`/tools/${tool.slug}`}
+            class="flex gap-4 rounded-lg border border-border bg-surface p-5 hover:border-foreground/40 transition-colors"
+          >
+            {tool.iconSrc ? (
+              <img
+                src={tool.iconSrc}
+                alt=""
+                aria-hidden="true"
+                class="w-12 h-12 rounded-md object-cover shrink-0 border border-border"
+              />
+            ) : (
+              <div
+                role="presentation"
+                class="w-12 h-12 rounded-md shrink-0 bg-muted text-muted-foreground border border-border flex items-center justify-center font-medium text-lg select-none"
+              >
+                {tool.title.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div class="flex-1 min-w-0">
+              <h2 class="text-lg font-medium tracking-tight text-foreground">
+                {tool.title}
+              </h2>
+              <p class="mt-1.5 text-sm text-muted-foreground">
+                {tool.description}
+              </p>
+            </div>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>
