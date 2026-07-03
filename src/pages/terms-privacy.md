@@ -38,7 +38,9 @@ If a specific tool collects or does something not covered here, that tool will h
 
 **What WheelerWorks collects.** When you visit the WheelerWorks site, basic technical information may be logged automatically by the hosting and analytics services I use — things like your browser type, general location (usually just country/region), pages visited, and how you got here. This is standard web-traffic data, used to understand what's useful and to keep the site working.
 
-**Analytics and cookies.** WheelerWorks uses [your analytics provider — e.g. Google Analytics / Plausible / none] to measure traffic. [If it uses cookies, say so here; if you use a privacy-focused, cookieless analytics tool, say that instead — e.g. "This is a privacy-focused analytics tool that does not use cookies or track you across other sites."] You can block cookies in your browser settings if you prefer.
+**Analytics and cookies.** WheelerWorks uses Google Analytics to measure traffic. Google Analytics sets cookies to help understand how visitors use the site. These cookies are off by default — the first time you visit, a banner asks for your consent, and no analytics cookies are set unless you accept. You can decline, and you can also block cookies in your browser settings if you prefer.
+
+**Feedback.** If you use the feedback link, what you submit — your message, an optional email address if you provide one, plus the page you sent it from and your browser's user-agent string — is stored so I can read and act on it. The email is only used to follow up if you asked a question; leave it blank if you'd rather stay anonymous.
 
 **Individual tools handle their own data.** The tools linked from WheelerWorks are separate, and some collect more than the catalog site does. For example, a tool with user accounts stores your account details, and a tool that connects to your own services (like email or a spreadsheet) accesses only what's needed to do its job. Each such tool has its own privacy notice describing exactly what it accesses, stores, and why. Please read the notice on the specific tool you're using.
 

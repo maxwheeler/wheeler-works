@@ -1,0 +1,53 @@
+---
+import Button from "@wheeler-works/ui-astro/Button.astro";
+---
+
+<div
+  id="consent-banner"
+  hidden
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-surface shadow-lg"
+>
+  <div
+    class="mx-auto max-w-3xl px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p class="text-sm text-muted-foreground">
+      This site uses Google Analytics cookies to understand traffic. Analytics
+      stays off until you accept. See the <a
+        href="/terms-privacy"
+        class="underline hover:text-foreground">Terms &amp; Privacy</a
+      >.
+    </p>
+    <div class="flex gap-2 shrink-0">
+      <Button id="consent-reject" variant="outline" size="sm">Reject</Button>
+      <Button id="consent-accept" size="sm">Accept</Button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = "ww-analytics-consent";
+    var banner = document.getElementById("consent-banner");
+    if (!banner) return;
+    if (!localStorage.getItem(KEY)) banner.hidden = false;
+
+    function choose(value) {
+      localStorage.setItem(KEY, value);
+      banner.hidden = true;
+      if (value === "granted" && typeof gtag === "function") {
+        gtag("consent", "update", { analytics_storage: "granted" });
+      }
+    }
+
+    document
+      .getElementById("consent-accept")
+      .addEventListener("click", function () {
+        choose("granted");
+      });
+    document
+      .getElementById("consent-reject")
+      .addEventListener("click", function () {
+        choose("denied");
+      });
+  })();
+</script>

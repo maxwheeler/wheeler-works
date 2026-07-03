@@ -1,4 +1,6 @@
 ---
+import FeedbackButton from "./FeedbackButton.tsx";
+
 const year = new Date().getFullYear();
 ---
 
@@ -7,6 +9,11 @@ const year = new Date().getFullYear();
     class="mx-auto max-w-3xl px-6 py-6 flex items-center justify-between text-xs text-muted-foreground"
   >
     <span>&copy; {year} Max Wheeler</span>
-    <a href="/terms-privacy" class="hover:text-foreground">Terms &amp; Privacy</a>
+    <div class="flex items-center gap-4">
+      <FeedbackButton client:load />
+      <a href="/terms-privacy" class="hover:text-foreground"
+        >Terms &amp; Privacy</a
+      >
+    </div>
   </div>
 </footer>

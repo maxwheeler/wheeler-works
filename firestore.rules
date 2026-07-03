@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Feedback submissions from the public site. Create-only: the browser may
+    // add a well-formed doc, but nobody can read, edit, or delete via the
+    // client SDK. Read submissions in the Firebase console (or with the Admin
+    // SDK). Shape/size checks bound abuse since this is an unauthenticated,
+    // public write endpoint.
+    match /feedback/{id} {
+      allow read, update, delete: if false;
+      allow create: if isValidFeedback(request.resource.data);
+    }
+
+    function isValidFeedback(d) {
+      return d.keys().hasOnly(['type', 'message', 'email', 'page', 'userAgent', 'createdAt'])
+        && d.type in ['bug', 'feature', 'other']
+        && d.message is string && d.message.size() >= 10 && d.message.size() <= 4000
+        && d.email is string && d.email.size() <= 200
+        && d.page is string && d.page.size() <= 300
+        && d.userAgent is string && d.userAgent.size() <= 400
+        && d.createdAt == request.time;
+    }
+  }
+}

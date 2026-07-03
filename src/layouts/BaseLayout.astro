@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import ConsentBanner from "../components/ConsentBanner.astro";
 
 interface Props {
   title: string;
@@ -22,6 +23,28 @@ const siteTitle = title === "Wheeler Works" ? title : `${title} — Wheeler Work
     <meta name="generator" content={Astro.generator} />
     <title>{siteTitle}</title>
     {description && <meta name="description" content={description} />}
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-LEPZT6RTP0"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      // Consent Mode v2: deny storage until the visitor opts in.
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+      });
+      if (localStorage.getItem("ww-analytics-consent") === "granted") {
+        gtag("consent", "update", { analytics_storage: "granted" });
+      }
+      gtag("js", new Date());
+      gtag("config", "G-LEPZT6RTP0");
+    </script>
     <script is:inline>
       (function () {
         const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -38,5 +61,6 @@ const siteTitle = title === "Wheeler Works" ? title : `${title} — Wheeler Work
       <slot />
     </main>
     <SiteFooter />
+    <ConsentBanner />
   </body>
 </html>
