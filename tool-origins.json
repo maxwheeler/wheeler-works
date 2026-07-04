@@ -10,5 +10,11 @@
     "title": "Word Wrangler",
     "source": "../descramble/wordwrangler-description.md",
     "icon": "../descramble/descramble-web/public/icon-512.png"
+  },
+  {
+    "slug": "feed-me",
+    "title": "Feed Me",
+    "source": "../feedme/feedme-description.md",
+    "icon": "../feedme/frontend/public/icon-512.png"
   }
 ]
