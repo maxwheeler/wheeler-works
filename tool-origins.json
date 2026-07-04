@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "legionfall",
+    "title": "Legionfall",
+    "source": "../legionfall/legionfall-description.md",
+    "icon": "../legionfall/packages/client/public/icon-512.png"
+  },
+  {
+    "slug": "word-wrangler",
+    "title": "Word Wrangler",
+    "source": "../descramble/wordwrangler-description.md",
+    "icon": "../descramble/descramble-web/public/icon-512.png"
+  }
+]
