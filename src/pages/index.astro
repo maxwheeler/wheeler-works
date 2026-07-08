@@ -4,16 +4,52 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Prose from "@wheeler-works/ui-astro/Prose.astro";
 import HomeIntro from "../content/home-intro.mdx";
 
-const entries = await getCollection("tools");
+type Tool = {
+  slug: string;
+  title: string;
+  description: string;
+  iconSrc: string | null;
+};
 
-const tools = entries
-  .map((entry) => ({
-    slug: entry.id,
-    title: entry.data.title,
-    description: entry.data.description,
-    iconSrc: entry.data.icon?.src ?? null,
-  }))
-  .sort((a, b) => a.title.localeCompare(b.title));
+const entries = await getCollection("tools");
+const bySlug = new Map<string, Tool>(
+  entries.map((entry) => [
+    entry.id,
+    {
+      slug: entry.id,
+      title: entry.data.title,
+      description: entry.data.description,
+      iconSrc: entry.data.icon?.src ?? null,
+    },
+  ]),
+);
+
+// Editorial grouping for the home page — curated here, not owned by the tools.
+// A slug that has no entry yet (e.g. an upcoming tool) is simply skipped.
+const CATEGORIES = [
+  {
+    title: "Utilities",
+    description: "Small web tools that do one useful job.",
+    slugs: ["feed-me", "budget-tracker", "image-resizer"],
+  },
+  {
+    title: "Games",
+    description: "Things to play — solo or with friends.",
+    slugs: ["legionfall", "tiddle", "word-wrangler"],
+  },
+  {
+    title: "Miscellaneous",
+    description: "Everything else I've been tinkering with.",
+    slugs: ["stock-screener", "home-media-digitizer"],
+  },
+];
+
+const sections = CATEGORIES.map((cat) => ({
+  ...cat,
+  tools: cat.slugs
+    .map((slug) => bySlug.get(slug))
+    .filter((tool): tool is Tool => Boolean(tool)),
+})).filter((section) => section.tools.length > 0);
 ---
 
 <BaseLayout
@@ -26,40 +62,52 @@ const tools = entries
     <HomeIntro />
   </Prose>
 
-  <ul class="grid gap-4">
+  <div class="space-y-12">
     {
-      tools.map((tool) => (
-        <li>
-          <a
-            href={`/tools/${tool.slug}`}
-            class="flex gap-4 rounded-lg border border-border bg-surface p-5 hover:border-foreground/40 transition-colors"
-          >
-            {tool.iconSrc ? (
-              <img
-                src={tool.iconSrc}
-                alt=""
-                aria-hidden="true"
-                class="w-12 h-12 rounded-md object-cover shrink-0 border border-border"
-              />
-            ) : (
-              <div
-                role="presentation"
-                class="w-12 h-12 rounded-md shrink-0 bg-muted text-muted-foreground border border-border flex items-center justify-center font-medium text-lg select-none"
-              >
-                {tool.title.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div class="flex-1 min-w-0">
-              <h2 class="text-lg font-medium tracking-tight text-foreground">
-                {tool.title}
-              </h2>
-              <p class="mt-1.5 text-sm text-muted-foreground">
-                {tool.description}
-              </p>
-            </div>
-          </a>
-        </li>
+      sections.map((section) => (
+        <section>
+          <h2 class="text-xl font-medium tracking-tight text-foreground">
+            {section.title}
+          </h2>
+          <p class="mt-1 mb-4 text-sm text-muted-foreground">
+            {section.description}
+          </p>
+          <ul class="grid gap-4">
+            {section.tools.map((tool) => (
+              <li>
+                <a
+                  href={`/tools/${tool.slug}`}
+                  class="flex gap-4 rounded-lg border border-border bg-surface p-5 hover:border-foreground/40 transition-colors"
+                >
+                  {tool.iconSrc ? (
+                    <img
+                      src={tool.iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                      class="w-12 h-12 rounded-md object-cover shrink-0 border border-border"
+                    />
+                  ) : (
+                    <div
+                      role="presentation"
+                      class="w-12 h-12 rounded-md shrink-0 bg-muted text-muted-foreground border border-border flex items-center justify-center font-medium text-lg select-none"
+                    >
+                      {tool.title.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-medium tracking-tight text-foreground">
+                      {tool.title}
+                    </h3>
+                    <p class="mt-1.5 text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       ))
     }
-  </ul>
+  </div>
 </BaseLayout>
