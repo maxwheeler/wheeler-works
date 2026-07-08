@@ -22,5 +22,11 @@
     "title": "Budget by Mail",
     "source": "../budget-tracker/budget-by-mail-description.md",
     "icon": "../budget-tracker/website/icon.png"
+  },
+  {
+    "slug": "tiddle",
+    "title": "Tiddle",
+    "source": "../scrabblet/tiddle-description.md",
+    "icon": "../scrabblet/scrabblet-web/public/logo512.png"
   }
 ]
