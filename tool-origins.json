@@ -16,5 +16,11 @@
     "title": "Feed Me",
     "source": "../feedme/feedme-description.md",
     "icon": "../feedme/frontend/public/icon-512.png"
+  },
+  {
+    "slug": "budget-tracker",
+    "title": "Budget by Mail",
+    "source": "../budget-tracker/budget-by-mail-description.md",
+    "icon": "../budget-tracker/website/icon.png"
   }
 ]
