@@ -56,8 +56,26 @@ const { Content } = await render(entry);
       </div>
     </header>
 
-    <Prose>
-      <Content />
-    </Prose>
+    <div class="tool-body">
+      <Prose>
+        <Content />
+      </Prose>
+    </div>
   </article>
 </BaseLayout>
+
+<style>
+  /* Keep screenshots — especially tall phone captures — from dominating the
+     page. Landscape shots are unaffected (already shorter than the cap). Images
+     and their captions share one paragraph, so centering the paragraph does both. */
+  .tool-body :global(p:has(img)) {
+    text-align: center;
+  }
+  .tool-body :global(img) {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 32rem;
+    width: auto;
+    height: auto;
+  }
+</style>
