@@ -28,5 +28,11 @@
     "title": "Tiddle",
     "source": "../scrabblet/tiddle-description.md",
     "icon": "../scrabblet/scrabblet-web/public/logo512.png"
+  },
+  {
+    "slug": "image-resizer",
+    "title": "Image Resizer",
+    "source": "../reduceImagesWeb/wheelerworks/image-resizer-description.md",
+    "icon": "../reduceImagesWeb/icon.png"
   }
 ]

@@ -62,16 +62,31 @@ for (const t of ORIGINS) {
   rmSync(assetDir, { recursive: true, force: true });
   mkdirSync(assetDir, { recursive: true });
 
+  const missing = new Set();
   for (const ref of new Set(
     [...longRaw.matchAll(/!\[[^\]]*\]\((images\/[^)]+)\)/g)].map((m) => m[1]),
   )) {
     const from = join(srcDir, ref);
     if (existsSync(from)) copyFileSync(from, join(assetDir, basename(ref)));
-    else console.warn(`[sync] ${t.slug}: missing image ${ref}`);
+    else {
+      missing.add(ref);
+      console.warn(`[sync] ${t.slug}: image not found, dropping from page — ${ref}`);
+    }
   }
 
-  // Point body image paths at the copied assets, relative to the generated .mdx.
-  const body = longRaw.replace(
+  let body = longRaw;
+  // Drop the embed (and its caption line) for any image that doesn't exist, so a
+  // missing/optional screenshot degrades gracefully instead of failing the build.
+  for (const ref of missing) {
+    const esc = ref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    body = body.replace(
+      new RegExp(`\\n*!\\[[^\\]]*\\]\\(${esc}\\)\\n(?:\\*[^\\n]*\\*\\n)?`, "g"),
+      "\n\n",
+    );
+  }
+
+  // Point remaining body image paths at the copied assets, relative to the .mdx.
+  body = body.replace(
     /\(images\/([^)]+)\)/g,
     (_, name) => `(./${t.slug}/${basename(name)})`,
   );
