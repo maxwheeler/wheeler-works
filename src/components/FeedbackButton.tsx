@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import {
   Button,
   Dialog,
@@ -32,7 +32,13 @@ const TYPES = [
 // JSONL file; there is no backend here, so Send writes the submission straight to Firestore (the
 // `feedback` collection) under create-only security rules (see firestore.rules). Read submissions in the
 // Firebase console.
-export function FeedbackButton() {
+export function FeedbackButton({
+  children,
+  triggerClassName = "hover:text-foreground",
+}: {
+  children?: ReactNode;
+  triggerClassName?: string;
+} = {}) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<string>("bug");
   const [message, setMessage] = useState("");
@@ -93,8 +99,8 @@ export function FeedbackButton() {
         if (!o) setTimeout(reset, 200);
       }}
     >
-      <DialogTrigger className="hover:text-foreground">
-        💬 Feedback
+      <DialogTrigger className={triggerClassName}>
+        {children ?? "💬 Feedback"}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
