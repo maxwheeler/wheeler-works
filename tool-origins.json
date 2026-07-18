@@ -34,5 +34,10 @@
     "title": "Image Resizer",
     "source": "../reduceImagesWeb/wheelerworks/image-resizer-description.md",
     "icon": "../reduceImagesWeb/icon.png"
+  },
+  {
+    "slug": "monte-carlo-sheets",
+    "title": "Monte Carlo Sheets",
+    "source": "../monte-carlo-sheets/monte-carlo-sheets-description.md"
   }
 ]
