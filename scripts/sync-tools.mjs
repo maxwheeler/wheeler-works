@@ -54,8 +54,13 @@ for (const t of ORIGINS) {
   }
 
   const description = stripEmphasis(shortRaw.replace(/\s+/g, " ").trim());
-  const play = md.match(/^\*\*Play it:\*\*\s*(.+)$/im);
-  const playLine = play ? `**Play it:** ${linkifyBareUrls(play[1].trim())}` : null;
+  // The intro link line: any bold label (Play it: / Use it: / See it: / Get it: …)
+  // whose text carries a URL. Kept verb-agnostic so every tool includes it.
+  const play = md.match(/^(\*\*[^*\n]+\*\*)[ \t]*(.+)$/im);
+  const playLine =
+    play && /https?:\/\//.test(play[2])
+      ? `${play[1]} ${linkifyBareUrls(play[2].trim())}`
+      : null;
 
   // Rebuild the asset folder from scratch: images (and icon) copied in from origin.
   const assetDir = join(TOOLS_DIR, t.slug);
